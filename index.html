@@ -168,6 +168,9 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 96px);max-width:640px;mar
 .btn{display:block;width:100%;padding:13px;border-radius:2px;font:700 16px var(--fc);letter-spacing:.08em;text-transform:uppercase;background:var(--s3);border:1px solid var(--line2)}
 .btn.primary{background:var(--acc);color:var(--ink);border-color:var(--acc);display:inline-block;width:auto;padding:12px 26px}
 .panel .btn.primary{display:block;width:100%}
+.sync-st{margin:12px 0 0;text-align:center;font:500 10px var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+.sync-st.err{color:#ff8a95}
+.sync-st:empty{display:none}
 .link-btn{display:block;margin:14px auto 0;font:600 10px var(--fm);letter-spacing:.14em;text-transform:uppercase;color:#ff8a95}
 
 /* Tab bar */
@@ -181,12 +184,15 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 96px);max-width:640px;mar
 <body>
 <header class="head">
   <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-    <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a6b43"/><stop offset="1" stop-color="#03110a"/></linearGradient></defs>
+    <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f7a4d"/><stop offset="1" stop-color="#020d07"/></linearGradient></defs>
     <rect width="64" height="64" rx="14" fill="url(#lg)"/>
-    <rect x="10" y="10" width="44" height="44" rx="2" fill="none" stroke="#fff" stroke-width="2.2"/>
-    <path d="M32 10v12.5M32 41.5V54" stroke="#fff" stroke-width="2.2"/>
-    <circle cx="32" cy="32" r="9.5" fill="none" stroke="#fff" stroke-width="2.2"/>
-    <path d="M29.3 27.6v8.8l7.2-4.4z" fill="#fff"/>
+    <g fill="none" stroke="#fff" stroke-width="1.6">
+      <rect x="10" y="10" width="44" height="44"/>
+      <path d="M32 10v12.6M32 41.4V54"/>
+      <circle cx="32" cy="32" r="9.4"/>
+      <path d="M10 20.1h8.1v23.8H10M54 20.1h-8.1v23.8H54"/>
+    </g>
+    <path d="M29.2 27.5v9l7.5-4.5z" fill="#fff"/>
   </svg>
   <div class="brand"><small>Premier League · Highlights</small><b id="title">Matches</b></div>
   <button class="icon-btn" id="refreshBtn" aria-label="Refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
@@ -245,6 +251,18 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 96px);max-width:640px;mar
       <button class="btn primary" data-act="saveSettings">Save settings</button>
       <button class="link-btn" data-act="resetCache">Clear saved video list</button>
     </div>
+
+    <div class="lbl" id="syncSec">Sync across devices</div>
+    <div class="panel">
+      <div class="field">
+        <label for="ghToken">GitHub token (gist scope)</label>
+        <input type="password" id="ghToken" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ghp_…">
+        <p>Use the same token on your iPhone and iPad. Watched marks, favorites and settings (including the API key) sync through a private gist on your GitHub account.</p>
+      </div>
+      <button class="btn primary" data-act="syncSave">Connect &amp; sync</button>
+      <p class="sync-st" id="syncStatus"></p>
+      <button class="link-btn" data-act="syncOff" id="syncOffBtn" hidden>Disconnect this device</button>
+    </div>
   </section>
 
   <div class="status" id="status"></div>
@@ -271,6 +289,7 @@ const settings = Object.assign({ apiKey:'', handle:'@NBCSports', hideScores:true
 let watched = LS.get('plh.watched', {});
 for (const [k, v] of Object.entries(watched)) if (typeof v === 'number') watched[k] = { h: v }; // migrate v1
 let favs = LS.get('plh.favs', []);
+let favsU = LS.get('plh.favsU', 0);
 let standings = LS.get('plh.standings', null);
 let vcache = LS.get('plh.videos', null) || { uploads:null, handle:null, videos:{}, newest:null, oldest:null };
 const saveV = () => LS.set('plh.videos', vcache);
@@ -569,7 +588,7 @@ function renderMe(){
 
   let html = `<div class="tiles">
     <div class="tile hero"><div class="n">${seenAll.length}</div><div class="k">Matches seen</div>
-      <div class="sub">${Math.round(seenSeason / 380 * 100)}% of the 380-match season</div></div>
+      <div class="sub">${seenSeason && seenSeason < 4 ? '<1' : Math.round(seenSeason / 380 * 100)}% of the 380-match season</div></div>
     <div class="tile"><div class="n">${hl}</div><div class="k">Highlights</div></div>
     <div class="tile"><div class="n">${full}</div><div class="k">Live / Full</div></div>
     <div class="tile"><div class="n">${favSeen == null ? '–' : favSeen}</div><div class="k">${favSeen == null ? 'Pick a team below' : 'Your teams’ games'}</div></div>
@@ -605,12 +624,108 @@ function renderMe(){
 
 function setStatus(msg, err){ const s = $('#status'); s.textContent = msg; s.classList.toggle('err', !!err); }
 
+/* ---------- Sync (private GitHub Gist) ---------- */
+const GH = 'https://api.github.com';
+const SYNC_FILE = 'pl-highlights-sync.json';
+let sync = LS.get('plh.sync', { token:'', gistId:'' });
+let syncing = false, syncAgain = false, syncTimer = null;
+const sortKeys = o => Array.isArray(o) ? o.map(sortKeys)
+  : (o && typeof o === 'object') ? Object.keys(o).sort().reduce((r, k) => (r[k] = sortKeys(o[k]), r), {}) : o;
+const stable = o => JSON.stringify(sortKeys(o));
+const entryU = e => e ? (e.u || Math.max(e.h || 0, e.f || 0)) : -1;
+
+function setSyncStatus(msg, err){
+  const s = $('#syncStatus'); if (!s) return;
+  s.textContent = msg; s.classList.toggle('err', !!err);
+  $('#syncOffBtn').hidden = !sync.token;
+}
+async function gh(path, opts = {}){
+  const r = await fetch(GH + path, { ...opts, cache:'no-store', headers: {
+    'Authorization': 'Bearer ' + sync.token, 'Accept': 'application/vnd.github+json',
+    ...(opts.body ? { 'Content-Type': 'application/json' } : {}) } });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(r.status === 401 ? 'GitHub token not accepted' : (j.message || 'GitHub error ' + r.status)); e.status = r.status; throw e; }
+  return j;
+}
+function snapshot(){
+  return { v:1, watched, favs:{ list:favs, u:favsU },
+    prefs:{ apiKey:settings.apiKey, handle:settings.handle, hideScores:settings.hideScores, refreshMin:settings.refreshMin, u:settings.u || 0 } };
+}
+function mergeIn(remote){
+  let changed = false;
+  for (const [id, r] of Object.entries(remote.watched || {})) {
+    if (entryU(r) > entryU(watched[id])) { watched[id] = r; changed = true; }
+  }
+  if (remote.favs && (remote.favs.u || 0) > favsU) { favs = remote.favs.list || []; favsU = remote.favs.u; changed = true; }
+  const p = remote.prefs;
+  if (p) {
+    if ((p.u || 0) > (settings.u || 0)) {
+      const key = p.apiKey || settings.apiKey;
+      Object.assign(settings, p, { apiKey: key }); changed = true;
+    } else if (!settings.apiKey && p.apiKey) { settings.apiKey = p.apiKey; changed = true; }
+  }
+  if (changed) {
+    LS.set('plh.watched', watched); LS.set('plh.favs', favs); LS.set('plh.favsU', favsU); LS.set('plh.settings', settings);
+    fillSettings();
+  }
+  return changed;
+}
+async function findOrCreateGist(){
+  const list = await gh('/gists?per_page=100');
+  const hit = (list || []).find(g => g.files && g.files[SYNC_FILE]);
+  if (hit) sync.gistId = hit.id;
+  else {
+    const g = await gh('/gists', { method:'POST', body: JSON.stringify({
+      description:'PL Highlights app — sync data', public:false, files:{ [SYNC_FILE]:{ content: stable(snapshot()) } } }) });
+    sync.gistId = g.id;
+  }
+  LS.set('plh.sync', sync);
+}
+async function syncNow(){
+  if (!sync.token) return;
+  if (syncing) { syncAgain = true; return; }
+  syncing = true;
+  try {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        if (!sync.gistId) await findOrCreateGist();
+        const g = await gh('/gists/' + sync.gistId);
+        const f = g.files && g.files[SYNC_FILE];
+        let remote = {};
+        if (f) {
+          let txt = f.content;
+          if (f.truncated && f.raw_url) txt = await (await fetch(f.raw_url, { cache:'no-store' })).text();
+          try { remote = JSON.parse(txt || '{}'); } catch (e) {}
+        }
+        const changed = mergeIn(remote);
+        const out = stable(snapshot());
+        if (out !== stable(remote)) {
+          await gh('/gists/' + sync.gistId, { method:'PATCH', body: JSON.stringify({ files:{ [SYNC_FILE]:{ content: out } } }) });
+        }
+        if (changed) renderAll();
+        setSyncStatus('Synced ' + new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' }));
+        break;
+      } catch (e) {
+        if (e.status === 404 && attempt === 0) { sync.gistId = ''; continue; } // gist deleted — find or recreate
+        throw e;
+      }
+    }
+  } catch (e) {
+    setSyncStatus(e.message || 'Sync failed', true);
+  } finally {
+    syncing = false;
+    if (syncAgain) { syncAgain = false; syncNow(); }
+  }
+}
+function queueSync(){ if (!sync.token) return; clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, 1200); }
+
 /* ---------- Refresh loop ---------- */
 async function refresh(force){
   if (loading) return;
   loading = true; $('#refreshBtn').classList.add('spin');
   const win = windowFor(weekOffset), myOffset = weekOffset;
   let errMsg = '';
+  syncNow();
   try {
     const [gr, sr] = await Promise.allSettled([fetchGames(win), fetchStandings()]);
     if (sr.status === 'rejected') tableErr = sr.reason.message;
@@ -647,6 +762,8 @@ document.addEventListener('visibilitychange', () => {
 function fillSettings(){
   $('#apiKey').value = settings.apiKey; $('#handle').value = settings.handle;
   $('#hideScores').checked = settings.hideScores; $('#refreshMin').value = String(settings.refreshMin);
+  $('#ghToken').value = sync.token || '';
+  $('#syncOffBtn').hidden = !sync.token;
 }
 function goWeek(o){ weekOffset = o; games = []; revealed = {}; renderAll(); refresh(); }
 function setTab(t){ tab = t; LS.set('plh.tab', t); renderAll(); window.scrollTo(0, 0); }
@@ -658,10 +775,10 @@ document.addEventListener('click', e => {
   if (act === 'mark') {
     const g = games.find(x => x.id === id); if (!g) return;
     const k = el.dataset.kind, entry = watched[id] || {};
-    entry[k] ? delete entry[k] : (entry[k] = Date.now());
-    Object.assign(entry, { home: g.home.name, away: g.away.name, date: g.date.toISOString() });
-    if (!entry.h && !entry.f) delete watched[id]; else watched[id] = entry;
-    LS.set('plh.watched', watched); renderMatches();
+    entry[k] = entry[k] ? 0 : Date.now();   // keep un-marks as 0 so they sync too
+    Object.assign(entry, { home: g.home.name, away: g.away.name, date: g.date.toISOString(), u: Date.now() });
+    watched[id] = entry;
+    LS.set('plh.watched', watched); renderMatches(); queueSync();
   }
   else if (act === 'reveal') { revealed[id] = true; renderMatches(); }
   else if (act === 'filter') { filter = el.dataset.f; renderMatches(); }
@@ -673,7 +790,8 @@ document.addEventListener('click', e => {
   else if (act === 'fav') {
     const n = el.dataset.name;
     favs = favs.includes(n) ? favs.filter(x => x !== n) : [...favs, n];
-    LS.set('plh.favs', favs); renderMe();
+    favsU = Date.now();
+    LS.set('plh.favs', favs); LS.set('plh.favsU', favsU); renderMe(); queueSync();
   }
   else if (act === 'goSettings') { setTab('me'); fillSettings(); setTimeout(() => $('#settings').scrollIntoView({ behavior:'smooth' }), 50); }
   else if (act === 'saveSettings') {
@@ -682,8 +800,20 @@ document.addEventListener('click', e => {
     if (!settings.handle.startsWith('@')) settings.handle = '@' + settings.handle;
     settings.hideScores = $('#hideScores').checked;
     settings.refreshMin = Number($('#refreshMin').value);
+    settings.u = Date.now();
     LS.set('plh.settings', settings);
-    setStatus('Settings saved'); refresh(true);
+    setStatus('Settings saved'); queueSync(); refresh(true);
+  }
+  else if (act === 'syncSave') {
+    const t = $('#ghToken').value.trim();
+    if (!t) { setSyncStatus('Paste a GitHub token first', true); return; }
+    if (t !== sync.token) sync = { token: t, gistId: '' };
+    LS.set('plh.sync', sync);
+    setSyncStatus('Syncing…'); syncNow();
+  }
+  else if (act === 'syncOff') {
+    sync = { token:'', gistId:'' }; LS.set('plh.sync', sync);
+    $('#ghToken').value = ''; setSyncStatus('Sync turned off on this device');
   }
   else if (act === 'resetCache') {
     vcache = { uploads:null, handle:null, videos:{}, newest:null, oldest:null }; saveV();
