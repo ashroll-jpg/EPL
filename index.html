@@ -14,6 +14,7 @@
 <style>
 :root{--bg:#0b0d12;--card:#151922;--card2:#1d2331;--line:#252c3b;--text:#eef1f7;--muted:#8a92a6;--accent:#3ddc84;--live:#ff4d4f;--yt:#ff3b30}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body{padding-bottom:calc(env(safe-area-inset-bottom) + 28px);overscroll-behavior-y:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -178,13 +179,20 @@ function fmtRange({start, end}){
 
 /* ---------- Scores (ESPN public scoreboard) ---------- */
 async function fetchGames(win){
-  const a = new Date(win.start); a.setDate(a.getDate() - 1);
-  const b = new Date(win.end); b.setDate(b.getDate() + 1);
-  const r = await fetch(`${ESPN}?dates=${ymd(a)}-${ymd(b)}&limit=100`, { cache:'no-store' });
-  if (!r.ok) throw new Error('Could not load scores (' + r.status + ')');
-  const j = await r.json();
+  // ESPN rejects date ranges, so ask for each day separately (in parallel)
+  const days = [];
+  for (let i = -1; i <= 7; i++) { const d = new Date(win.start); d.setDate(d.getDate() + i); days.push(ymd(d)); }
+  const results = await Promise.allSettled(days.map(async day => {
+    const r = await fetch(`${ESPN}?dates=${day}`, { cache:'no-store' });
+    if (!r.ok) throw new Error('Could not load scores (' + r.status + ')');
+    return (await r.json()).events || [];
+  }));
+  const ok = results.filter(x => x.status === 'fulfilled');
+  if (!ok.length) throw results[0].reason;
+  const seen = new Set(), events = [];
+  ok.forEach(x => x.value.forEach(ev => { if (!seen.has(ev.id)) { seen.add(ev.id); events.push(ev); } }));
   const lo = win.start.getTime(), hi = win.end.getTime() + 86400000;
-  return (j.events || []).map(ev => {
+  return events.map(ev => {
     const c = (ev.competitions || [])[0] || {};
     const side = h => {
       const t = (c.competitors || []).find(x => x.homeAway === h) || {};
