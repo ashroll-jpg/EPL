@@ -1,16 +1,24 @@
-# PL Extended Highlights
+# Reel FC
 
-Premier League scores + NBC Sports extended highlights, with a watched tracker. Built to run on GitHub Pages and be saved to the iPhone Home Screen.
+Premier League scores + NBC Sports extended highlights, with a watched tracker. Runs on GitHub Pages and is saved to the iPhone/iPad Home Screen.
+
+## Files
+| File | What it is | Replace on updates? |
+|---|---|---|
+| index.html | The app | Yes |
+| version.json | Current version + "what's new" notes | Yes |
+| manifest.json | App name, colours, icons for the Home Screen | Only when changed |
+| icon-180/192/512.png | Home Screen icons | Only when changed |
+| config.js | Your YouTube API key | **No — set once, keep yours** |
 
 ## Setup
-1. Upload `index.html`, `manifest.json`, `icon-180.png`, `icon-192.png`, `icon-512.png` to a GitHub repo.
-2. Repo **Settings → Pages** → Deploy from branch `main`, folder `/ (root)`.
-3. Get a free YouTube API key: console.cloud.google.com → create a project → enable **YouTube Data API v3** → Credentials → Create API key. Restrict it to *HTTP referrers* `https://YOURNAME.github.io/*` and to the YouTube Data API.
-4. Open the Pages URL in Safari → Share → **Add to Home Screen**.
-5. Open the app → gear icon → paste the API key. It's stored only on your phone, not in the repo.
+1. Upload all files to the repo root; Settings → Pages → deploy from `main`, root folder.
+2. Edit `config.js` on GitHub and paste your YouTube Data API key between the quotes.
+   Restrict the key in Google Cloud: Websites → `https://ashroll-jpg.github.io/*`, API → YouTube Data API v3 only.
+3. Open the site in Safari → Share → Add to Home Screen.
+4. Optional sync: Me tab → Sync across devices → paste a GitHub token with only the `gist` scope (same token on each device).
 
 ## How it works
-- Scores: ESPN's public Premier League scoreboard (no key needed).
-- Videos: reads the NBC Sports YouTube uploads list (1 quota unit per 50 videos, well within the free 10,000/day) and matches titles containing "Extended" to each fixture by team name.
-- Refreshes every few minutes (every minute during live matches) and when you reopen the app. YouTube is only checked while a finished match is still missing its video.
-- Watched marks are saved on the device.
+- Scores and table: ESPN's public Premier League feeds.
+- Videos: NBC Sports YouTube uploads, matched to fixtures by team names.
+- Updates: the app checks `version.json` and shows a pop-up when a newer version is live.
