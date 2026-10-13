@@ -1,7 +1,10 @@
 {
-  "version": "2.8",
+  "version": "3.0",
   "notes": [
-    "New name: Reel FC",
-    "To update the name under your Home Screen icon, remove the shortcut and add it again from Safari"
+    "Champions League added — extended highlights from CBS Sports Golazo",
+    "Matches now split into Weekend (Fri–Mon) and Midweek (Tue–Thu), with a PL / UCL badge on every match",
+    "Tables tab: Premier League table plus the Champions League table, turning into a knockout bracket from February",
+    "Stats split by competition, and you can star Champions League clubs as favorites",
+    "Spoiler shield covers both competitions"
   ]
 }

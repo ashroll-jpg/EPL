@@ -1,6 +1,6 @@
 # Reel FC
 
-Premier League scores + NBC Sports extended highlights, with a watched tracker. Runs on GitHub Pages and is saved to the iPhone/iPad Home Screen.
+Premier League and Champions League scores + extended highlights (NBC Sports for PL, CBS Sports Golazo for UCL), with a watched tracker. Runs on GitHub Pages and is saved to the iPhone/iPad Home Screen.
 
 ## Files
 | File | What it is | Replace on updates? |
@@ -19,6 +19,7 @@ Premier League scores + NBC Sports extended highlights, with a watched tracker. 
 4. Optional sync: Me tab → Sync across devices → paste a GitHub token with only the `gist` scope (same token on each device).
 
 ## How it works
-- Scores and table: ESPN's public Premier League feeds.
-- Videos: NBC Sports YouTube uploads, matched to fixtures by team names.
+- Scores, tables and the UCL knockout bracket: ESPN's public Premier League and Champions League feeds.
+- Videos: NBC Sports (PL) and CBS Sports Golazo (UCL) YouTube uploads, matched to fixtures by team names; 6+ minutes counts as extended.
+- Matches are grouped into Weekend (Fri–Mon) and Midweek (Tue–Thu) blocks.
 - Updates: the app checks `version.json` and shows a pop-up when a newer version is live.

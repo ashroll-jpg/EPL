@@ -204,6 +204,42 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
 .tb.on[data-t=table]{background:#e2f1fd;color:var(--sky)}
 .tb.on[data-t=me]{background:#eeeafe;color:var(--violet)}
 
+/* Competitions */
+.comp{display:inline-flex;align-items:center;padding:4px 9px;border-radius:99px;font:700 11px var(--fb);letter-spacing:.03em;color:#fff;white-space:nowrap;flex:none}
+.comp.pl{background:linear-gradient(120deg,#3d0a4f,#7a2a92)}
+.comp.ucl{background:linear-gradient(120deg,#0b1d5e,#2a55c9)}
+.top{flex-wrap:wrap;row-gap:6px}
+.top .tl{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.wk .kind{font:600 11.5px var(--fb);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.sec{display:flex;align-items:center;gap:8px;margin:22px 4px 10px;font:700 18px var(--fh)}
+.sec:first-child{margin-top:12px}
+details.lp{margin-top:14px}
+details.lp summary{cursor:pointer;list-style:none;padding:12px 16px;border-radius:16px;background:var(--s1);border:1px solid var(--line);box-shadow:var(--shadow);font:600 14px var(--fb);color:var(--sky)}
+details.lp summary::-webkit-details-marker{display:none}
+details.lp summary::after{content:" ▾"}
+details.lp[open] summary::after{content:" ▴"}
+.bracket{display:flex;gap:12px;overflow-x:auto;margin:0 -16px;padding:4px 16px 14px;scroll-snap-type:x mandatory;scroll-padding:0 16px;-webkit-overflow-scrolling:touch}
+.bracket::after{content:"";flex:0 0 4px}
+.bcol{flex:0 0 212px;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:space-around;gap:10px}
+.bcol h4{margin:0;font:700 14px var(--fh);color:var(--muted)}
+.tie{background:var(--s1);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:8px 12px}
+.tie.fav{border-color:rgba(217,138,0,.45)}
+.tie .tt{display:flex;align-items:center;gap:8px;height:30px}
+.tie img,.tie .nologo{width:20px;height:20px;object-fit:contain;flex:none}
+.tie .nm{flex:1;min-width:0;font:600 14px var(--fb);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tie .ag{font:700 16px var(--fh)}
+.tie .tt.out .nm,.tie .tt.out .ag{color:var(--dim)}
+.tie .tt.win .ag{color:#0a9a62}
+.tie .lg{font-size:11.5px;color:var(--muted);margin-top:3px}
+.tie .star{color:var(--amber);font-size:12px}
+.fsub{display:flex;align-items:center;gap:8px;margin:14px 4px 8px;font:600 13.5px var(--fb);color:var(--muted)}
+.tile .subs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tile .subs .sub{margin-top:0}
+.bars .b.cb{grid-template-columns:auto 1fr 1fr 24px}
+.bars .track i.pl{background:linear-gradient(90deg,#5b1a7a,#a24bc4)}
+.bars .track i.ucl{background:linear-gradient(90deg,#1e3fae,#5c8cff)}
+.recent .it .comp{font-size:10px;padding:3px 7px}
+
 /* Version + update popups */
 .ver{margin:26px 0 0;text-align:center}
 .ver b{display:block;font:600 14px var(--fh);color:var(--muted)}
@@ -246,7 +282,7 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
 <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient>
 </defs><rect width="512" height="512" rx="114" fill="#fff"/><clipPath id="c1"><circle cx="256" cy="256" r="178"/></clipPath>
 <g filter="url(#sh)"><g clip-path="url(#c1)"><rect width="512" height="512" fill="url(#mow)"/><rect width="512" height="512" filter="url(#blades)" opacity=".85"/><rect width="512" height="512" fill="url(#shine)"/></g></g><path d="M214 186 Q206 181 206 191 V321 Q206 331 214 326 L330 262 Q338 256 330 250 Z" fill="#fff" filter="url(#paint)"/></svg>
-  <div class="brand"><small>Reel FC · Premier League</small><b id="title">Matches</b></div>
+  <div class="brand"><small>Reel FC</small><b id="title">Matches</b></div>
   <button class="circ" id="refreshBtn" aria-label="Refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
 </header>
 
@@ -254,9 +290,9 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
   <!-- MATCHES -->
   <section id="tab-matches">
     <div class="weekbar">
-      <button class="circ" data-act="prev" aria-label="Previous week"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div class="wk"><div class="r" id="range"></div><button id="todayBtn" data-act="today" hidden>Back to this week</button></div>
-      <button class="circ" data-act="next" aria-label="Next week"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button class="circ" data-act="prev" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="wk"><div class="kind" id="kind"></div><div class="r" id="range"></div><button id="todayBtn" data-act="today" hidden>Back to now</button></div>
+      <button class="circ" data-act="next" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
     <div class="prog"><div class="t"><span id="progText">–</span><span id="progPct"></span></div><div class="bar"><i id="progBar" style="width:0"></i></div></div>
     <div class="chips">
@@ -278,7 +314,7 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
     <div id="meStats"></div>
     <div class="lbl">Favorite teams ★</div>
     <p class="note" style="margin:0 4px 10px">Their matches are pinned to the top.</p>
-    <div class="teams-grid" id="favGrid"></div>
+    <div id="favWrap"></div>
 
     <div class="lbl" id="settings">Settings</div>
     <div class="panel">
@@ -288,10 +324,14 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
         <p id="keyNote">Optional — overrides the key built into the app. Stored only on this device.</p>
       </div>
       <div class="field">
-        <label for="handle">YouTube channel</label>
-        <input type="text" id="handle" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label for="handlePL">Premier League channel</label>
+        <input type="text" id="handlePL" autocomplete="off" autocapitalize="off" spellcheck="false">
       </div>
-      <label class="toggle">Spoiler shield — hide scores and table until watched<input type="checkbox" id="hideScores"></label>
+      <div class="field">
+        <label for="handleUCL">Champions League channel</label>
+        <input type="text" id="handleUCL" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <label class="toggle">Spoiler shield — hide scores, tables and bracket until watched (both competitions)<input type="checkbox" id="hideScores"></label>
       <div class="field">
         <label for="refreshMin">Auto-refresh</label>
         <select id="refreshMin">
@@ -326,18 +366,18 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
 
 <nav class="tabbar">
   <button class="tb" data-act="tab" data-t="matches"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/></svg>Matches</button>
-  <button class="tb" data-act="tab" data-t="table"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"/></svg>Table</button>
+  <button class="tb" data-act="tab" data-t="table"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"/></svg>Tables</button>
   <button class="tb" data-act="tab" data-t="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Me</button>
 </nav>
 
 <script src="config.js"></script>
 <script>
-const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard';
-const STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings';
+const ESPN_SITE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/';
+const ESPN_STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/';
 const YT = 'https://www.googleapis.com/youtube/v3';
 const BUILT_IN_KEY = window.PLH_YOUTUBE_KEY || '';   // set in config.js (never replaced by updates)
 // App version — must match version.json in the repo. Bumped with every release.
-const APP_VERSION = '2.8';
+const APP_VERSION = '3.0';
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -345,68 +385,113 @@ const LS = {
 };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+/* ---------- Competitions ---------- */
+const COMPS = {
+  pl:  { key:'pl',  league:'eng.1', name:'Premier League', short:'PL', handle:'@NBCSports', source:'NBC Sports', matches:380, maxDays:6,
+         exclude:null },
+  ucl: { key:'ucl', league:'uefa.champions', name:'Champions League', short:'UCL', handle:'@cbssportsgolazo', source:'CBS Sports Golazo', matches:189, maxDays:4,
+         // Golazo also posts other competitions — skip anything that isn't the Champions League
+         exclude:/europa|conference league|\buel\b|\buecl\b|serie a|super cup|women|uwcl|nwsl|la liga|bundesliga|ligue 1|scottish|youth|copa|nations league/i }
+};
+const COMP_KEYS = ['pl', 'ucl'];
+
 const apiKey = () => settings.apiKey || BUILT_IN_KEY;
-const settings = Object.assign({ apiKey:'', handle:'@NBCSports', hideScores:true, refreshMin:5 }, LS.get('plh.settings', {}));
+const settings = Object.assign({ apiKey:'', handles:{}, hideScores:true, refreshMin:5 }, LS.get('plh.settings', {}));
+if (settings.handle) { settings.handles = { ...settings.handles, pl: settings.handle }; delete settings.handle; LS.set('plh.settings', settings); }   // migrate v2
+settings.handles = settings.handles || {};
+const handleFor = c => settings.handles[c] || COMPS[c].handle;
+
 let watched = LS.get('plh.watched', {});
 for (const [k, v] of Object.entries(watched)) if (typeof v === 'number') watched[k] = { h: v }; // migrate v1
 let favs = LS.get('plh.favs', []);
 let favsU = LS.get('plh.favsU', 0);
-let standings = LS.get('plh.standings', null);
-const VCACHE_VER = 2; // bumped: NBC title format changed, rescan needed
-const emptyV = () => ({ ver:VCACHE_VER, uploads:null, handle:null, videos:{}, newest:null, oldest:null });
-let vcache = LS.get('plh.videos', null);
-if (!vcache || vcache.ver !== VCACHE_VER) vcache = emptyV();
-const saveV = () => LS.set('plh.videos', vcache);
+let standings = LS.get('plh.standings2', null) || { pl: LS.get('plh.standings', null), ucl: null };
+
+// Video cache, one bucket per YouTube channel
+const VCACHE_VER = 3;
+let vcache = LS.get('plh.videos3', null);
+if (!vcache || vcache.ver !== VCACHE_VER) {
+  vcache = { ver: VCACHE_VER, ch: {} };
+  const old = LS.get('plh.videos', null);      // carry over v2 cache (keeps video lengths)
+  if (old && old.ver === 2 && old.handle) vcache.ch[old.handle] = { uploads: old.uploads, videos: old.videos || {}, newest: old.newest, oldest: old.oldest };
+}
+const chan = h => vcache.ch[h] || (vcache.ch[h] = { uploads:null, videos:{}, newest:null, oldest:null });
+const saveV = () => LS.set('plh.videos3', vcache);
+
+let bracket = LS.get('plh.bracket', null);     // { key, rounds:{ label: {at, done, events} } }
 let tab = LS.get('plh.tab', 'matches');
 let revealed = {}, tableRevealed = false, tableErr = '';
 let weekOffset = 0, games = [], filter = 'all', loading = false;
-let lastYT = 0, lastRefresh = 0, timer = null;
+let lastYT = {}, lastRefresh = 0, timer = null;
 
 const seen = id => !!(watched[id] && (watched[id].h || watched[id].f));
 const isFav = g => favs.includes(g.home.name) || favs.includes(g.away.name);
 
-/* ---------- Week window (Tue → Mon) ---------- */
+/* ---------- Match windows: Fri–Mon (weekend) and Tue–Thu (midweek) ---------- */
+function blockStartFor(d){
+  const dow = d.getDay(), s = new Date(d);
+  if (dow >= 2 && dow <= 4) s.setDate(d.getDate() - (dow - 2));   // Tue–Thu → that Tuesday
+  else s.setDate(d.getDate() - ((dow - 5 + 7) % 7));              // Fri–Mon → that Friday
+  return s;
+}
 function windowFor(offset){
   const n = new Date();
-  const d = new Date(n.getFullYear(), n.getMonth(), n.getDate());
-  const back = (d.getDay() - 2 + 7) % 7;
-  const start = new Date(d); start.setDate(d.getDate() - back + offset * 7);
-  const end = new Date(start); end.setDate(start.getDate() + 6);
-  return { start, end };
+  let s = blockStartFor(new Date(n.getFullYear(), n.getMonth(), n.getDate()));
+  for (let i = 0; i < Math.abs(offset); i++) {
+    const fri = s.getDay() === 5, x = new Date(s);
+    x.setDate(s.getDate() + (offset > 0 ? (fri ? 4 : 3) : (fri ? -3 : -4)));
+    s = x;
+  }
+  const weekend = s.getDay() === 5;
+  const end = new Date(s); end.setDate(s.getDate() + (weekend ? 3 : 2));
+  return { start: s, end, weekend };
 }
 const ymd = d => `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-function fmtRange({start, end}){
-  const o = { month:'short', day:'numeric' };
-  return `${start.toLocaleDateString([], o)} – ${end.toLocaleDateString([], start.getMonth() === end.getMonth() ? { day:'numeric' } : o)}`;
+function fmtRange({ start, end }){
+  const wd = d => d.toLocaleDateString([], { weekday:'short' }), mo = d => d.toLocaleDateString([], { month:'short' });
+  return `${wd(start)} ${mo(start)} ${start.getDate()} – ${wd(end)} ${start.getMonth() === end.getMonth() ? '' : mo(end) + ' '}${end.getDate()}`;
 }
 
-/* ---------- Scores (ESPN, one request per day) ---------- */
+/* ---------- Scores (ESPN, one request per day per competition) ---------- */
+const ROUNDS = { 'knockout-round-playoffs':'Playoff', 'round-of-16':'R16', 'quarterfinals':'QF', 'semifinals':'SF', 'final':'Final' };
+function slimSide(c, h){
+  const t = (c.competitors || []).find(x => x.homeAway === h) || {};
+  const tm = t.team || {};
+  return { name: tm.displayName || '?', short: tm.shortDisplayName || tm.displayName || '?',
+           location: tm.location || '', logo: tm.logo || '', score: t.score ?? '', winner: !!t.winner,
+           color: tm.color || '', alt: tm.alternateColor || '' };
+}
+function slimEvent(ev, comp){
+  const c = (ev.competitions || [])[0] || {};
+  const st = (ev.status && ev.status.type) || (c.status && c.status.type) || {};
+  const slug = ev.season && ev.season.slug;
+  const leg = ((c.notes || [])[0] || {}).headline || '';
+  const rnd = ROUNDS[slug] ? ROUNDS[slug] + (/leg/i.test(leg) ? ' · ' + leg.replace(/(\d)\w*\s*leg/i, 'Leg $1') : '') : '';
+  return { id: ev.id, comp, date: new Date(ev.date), home: slimSide(c, 'home'), away: slimSide(c, 'away'), round: rnd, slug: slug || '',
+           state: st.state, detail: st.shortDetail || st.detail || '', completed: !!st.completed };
+}
 async function fetchGames(win){
-  const days = [];
-  for (let i = -1; i <= 7; i++) { const d = new Date(win.start); d.setDate(d.getDate() + i); days.push(ymd(d)); }
-  const results = await Promise.allSettled(days.map(async day => {
-    const r = await fetch(`${ESPN}?dates=${day}`, { cache:'no-store' });
-    if (!r.ok) throw new Error('Could not load scores (' + r.status + ')');
-    return (await r.json()).events || [];
-  }));
+  const jobs = [];
+  for (const comp of COMP_KEYS) {
+    const days = Math.round((win.end - win.start) / 86400000);
+    for (let i = -1; i <= days + 1; i++) {
+      const d = new Date(win.start); d.setDate(d.getDate() + i);
+      jobs.push((async () => {
+        const r = await fetch(`${ESPN_SITE}${COMPS[comp].league}/scoreboard?dates=${ymd(d)}`, { cache:'no-store' });
+        if (!r.ok) throw new Error('Could not load scores (' + r.status + ')');
+        const j = await r.json();
+        if (comp === 'ucl') saveUclCalendar(j);
+        return (j.events || []).map(ev => slimEvent(ev, comp));
+      })());
+    }
+  }
+  const results = await Promise.allSettled(jobs);
   const ok = results.filter(x => x.status === 'fulfilled');
   if (!ok.length) throw results[0].reason;
-  const ids = new Set(), events = [];
-  ok.forEach(x => x.value.forEach(ev => { if (!ids.has(ev.id)) { ids.add(ev.id); events.push(ev); } }));
+  const ids = new Set(), out = [];
+  ok.forEach(x => x.value.forEach(g => { if (!ids.has(g.id)) { ids.add(g.id); out.push(g); } }));
   const lo = win.start.getTime(), hi = win.end.getTime() + 86400000;
-  return events.map(ev => {
-    const c = (ev.competitions || [])[0] || {};
-    const side = h => {
-      const t = (c.competitors || []).find(x => x.homeAway === h) || {};
-      const tm = t.team || {};
-      return { name: tm.displayName || '?', short: tm.shortDisplayName || tm.displayName || '?',
-               location: tm.location || '', logo: tm.logo || '', score: t.score ?? '',
-               color: tm.color || '', alt: tm.alternateColor || '' };
-    };
-    const st = (ev.status && ev.status.type) || (c.status && c.status.type) || {};
-    return { id: ev.id, date: new Date(ev.date), home: side('home'), away: side('away'),
-             state: st.state, detail: st.shortDetail || st.detail || '', completed: !!st.completed };
-  }).filter(g => g.date.getTime() >= lo && g.date.getTime() < hi).sort((x, y) => x.date - y.date);
+  return out.filter(g => g.date.getTime() >= lo && g.date.getTime() < hi).sort((x, y) => x.date - y.date);
 }
 
 /* ---------- Team colors (from ESPN), kept readable on a light background ---------- */
@@ -420,10 +505,10 @@ function teamRGB(t){
   return [n >> 16, n >> 8 & 255, n & 255];
 }
 
-/* ---------- Table (ESPN standings) ---------- */
-async function fetchStandings(){
-  const r = await fetch(STAND, { cache:'no-store' });
-  if (!r.ok) throw new Error('Could not load table (' + r.status + ')');
+/* ---------- Tables (ESPN standings) ---------- */
+async function fetchStandings(comp){
+  const r = await fetch(`${ESPN_STAND}${COMPS[comp].league}/standings`, { cache:'no-store' });
+  if (!r.ok) throw new Error('Could not load ' + COMPS[comp].name + ' table (' + r.status + ')');
   const j = await r.json();
   const entries = (j.children && j.children[0] && j.children[0].standings && j.children[0].standings.entries)
                || (j.standings && j.standings.entries) || [];
@@ -436,10 +521,97 @@ async function fetchStandings(){
              gp: v('gamesPlayed'), w: v('wins'), d: v('ties'), l: v('losses'), gd: v('pointDifferential'), pts: v('points'),
              note: e.note || null };
   }).sort((a, b) => (a.rank || 99) - (b.rank || 99));
-  if (rows.length) { standings = { rows, at: Date.now() }; LS.set('plh.standings', standings); }
+  if (rows.length) { standings[comp] = { rows, at: Date.now() }; LS.set('plh.standings2', standings); }
 }
 
-/* ---------- YouTube (NBC Sports uploads — 1 quota unit per 50 videos) ---------- */
+/* ---------- Champions League knockout bracket ---------- */
+function saveUclCalendar(j){
+  const cal = j.leagues && j.leagues[0] && j.leagues[0].calendar;
+  const c0 = Array.isArray(cal) && cal[0] && typeof cal[0] === 'object' ? cal[0] : null;
+  if (!c0 || !Array.isArray(c0.entries)) return;
+  LS.set('plh.uclcal', { key: c0.startDate || '', entries: c0.entries.map(e => ({ label: e.label, detail: e.detail, startDate: e.startDate, endDate: e.endDate })) });
+}
+const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function detailRange(detail, year){
+  const m = /^([A-Za-z]{3})\w*\s+(\d{1,2})(?:\s*-\s*(?:([A-Za-z]{3})\w*\s+)?(\d{1,2}))?$/.exec(String(detail || '').trim());
+  if (!m) return null;
+  const mon = s => MONTHS.indexOf(s.slice(0, 3).toLowerCase());
+  const a = new Date(year, mon(m[1]), +m[2]);
+  const b = m[4] ? new Date(year, mon(m[3] || m[1]), +m[4]) : new Date(a);
+  return isNaN(a) || isNaN(b) || mon(m[1]) < 0 ? null : [a, b];
+}
+async function fetchRound(e){
+  const end = new Date(e.endDate);
+  let [a, b] = detailRange(e.detail, end.getFullYear()) || [new Date(e.startDate), end];
+  a = new Date(a); a.setDate(a.getDate() - 1); b = new Date(b); b.setDate(b.getDate() + 1);
+  const evs = {};
+  for (let s = new Date(a); s <= b; s.setDate(s.getDate() + 9)) {             // ESPN accepts ranges of ~9 days
+    const t = new Date(s); t.setDate(t.getDate() + 8); if (t > b) t.setTime(b.getTime());
+    const r = await fetch(`${ESPN_SITE}uefa.champions/scoreboard?dates=${ymd(s)}-${ymd(t)}`, { cache:'no-store' });
+    if (!r.ok) throw new Error('Could not load bracket (' + r.status + ')');
+    const j = await r.json();
+    (j.events || []).forEach(ev => { if (ROUNDS[ev.season && ev.season.slug]) evs[ev.id] = slimEvent(ev, 'ucl'); });
+  }
+  return Object.values(evs);
+}
+const KO_ROUND = /playoff|16|quarter|semi|final/i;
+async function refreshBracket(force){
+  const cal = LS.get('plh.uclcal', null);
+  if (!cal) return false;
+  if (!bracket || bracket.key !== cal.key) bracket = { key: cal.key, rounds: {} };
+  const now = Date.now();
+  let changed = false;
+  for (const e of cal.entries.filter(x => KO_ROUND.test(x.label || ''))) {
+    if (new Date(e.startDate).getTime() > now) continue;
+    const c = bracket.rounds[e.label];
+    if (c && c.done) continue;
+    if (c && !force && now - c.at < 10 * 60000) continue;
+    const events = await fetchRound(e);
+    const done = events.length > 0 && events.every(x => x.completed) && now > new Date(e.endDate).getTime();
+    bracket.rounds[e.label] = { at: now, done, events };
+    changed = true;
+  }
+  if (changed) LS.set('plh.bracket', bracket);
+  return changed;
+}
+function buildBracket(){
+  const cal = LS.get('plh.uclcal', null);
+  if (!cal || !bracket || bracket.key !== cal.key) return [];
+  const out = [];
+  for (const e of cal.entries.filter(x => KO_ROUND.test(x.label || ''))) {
+    const r = bracket.rounds[e.label];
+    if (!r || !r.events.length) continue;
+    const ties = {};
+    r.events.map(x => ({ ...x, date: new Date(x.date) })).sort((x, y) => x.date - y.date).forEach(ev => {
+      const key = [ev.home.name, ev.away.name].sort().join('|');
+      const t = ties[key] || (ties[key] = { teams: [ev.home, ev.away].sort((x, y) => x.name.localeCompare(y.name)).map(x => ({ name:x.name, short:x.short, logo:x.logo, agg:0 })), legs: [] });
+      t.legs.push(ev);
+      if (ev.state !== 'pre') t.teams.forEach(tm => { tm.agg += Number((tm.name === ev.home.name ? ev.home : ev.away).score) || 0; });
+    });
+    const isFinal = /^final$/i.test(e.label.trim());
+    const list = Object.values(ties).map(t => {
+      const last = t.legs[t.legs.length - 1];
+      t.done = t.legs.every(l => l.completed) && t.legs.length >= (isFinal ? 1 : 2);
+      if (t.done) {
+        const [x, y] = t.teams;
+        t.winner = x.agg > y.agg ? x.name : y.agg > x.agg ? y.name
+          : ([last.home, last.away].find(s => s.winner) || {}).name || '';
+      }
+      t.started = t.legs.some(l => l.state !== 'pre');
+      return t;
+    });
+    out.push({ label: e.label, ties: list });
+  }
+  // order each round so ties line up with the round before (bracket order)
+  for (let i = 1; i < out.length; i++) {
+    const prev = out[i - 1].ties;
+    const pos = name => { const k = prev.findIndex(t => t.teams.some(x => x.name === name)); return k < 0 ? 999 : k; };
+    out[i].ties.sort((a, b) => Math.min(...a.teams.map(x => pos(x.name))) - Math.min(...b.teams.map(x => pos(x.name))));
+  }
+  return out;
+}
+
+/* ---------- YouTube (uploads playlists — 1 quota unit per 50 videos) ---------- */
 async function yt(path, params){
   const u = new URL(YT + path);
   Object.entries({ ...params, key: apiKey() }).forEach(([k, v]) => u.searchParams.set(k, v));
@@ -448,22 +620,22 @@ async function yt(path, params){
   if (!r.ok) throw new Error('YouTube: ' + ((j.error && j.error.message) || r.status));
   return j;
 }
-async function uploadsId(){
-  if (vcache.uploads && vcache.handle === settings.handle) return vcache.uploads;
-  const j = await yt('/channels', { part:'contentDetails', forHandle: settings.handle });
+async function uploadsId(handle){
+  const c = chan(handle);
+  if (c.uploads) return c.uploads;
+  const j = await yt('/channels', { part:'contentDetails', forHandle: handle });
   const id = j.items && j.items[0] && j.items[0].contentDetails.relatedPlaylists.uploads;
-  if (!id) throw new Error('Could not find YouTube channel ' + settings.handle);
-  vcache = { ...emptyV(), uploads:id, handle:settings.handle };
-  saveV();
+  if (!id) throw new Error('Could not find YouTube channel ' + handle);
+  c.uploads = id; saveV();
   return id;
 }
-// NBC titles vary: "Extended Highlights: Arsenal 2, Leeds United 1 Matchweek 6", "Man United v. Spurs | PREMIER LEAGUE HIGHLIGHTS"…
+// Titles vary: "Extended Highlights: Arsenal 2, Leeds United 1 Matchweek 6", "PSG vs. Bayern: Extended Highlights | UCL | CBS Sports Golazo"…
 const looksLikeHighlight = t => /highlights/i.test(t);
-async function scanVideos(win){
-  const pl = await uploadsId();
+async function scanVideos(win, handle){
+  const pl = await uploadsId(handle), c = chan(handle);
   const floor = new Date(win.start.getTime() - 86400000);
-  const covered = vcache.oldest && new Date(vcache.oldest) <= floor;
-  const stopAt = covered && vcache.newest ? new Date(vcache.newest) : floor;
+  const covered = c.oldest && new Date(c.oldest) <= floor;
+  const stopAt = covered && c.newest ? new Date(c.newest) : floor;
   let token = '', pages = 0, newest = null, oldest = null;
   while (pages < 40) {
     const j = await yt('/playlistItems', { part:'snippet', playlistId: pl, maxResults: 50, ...(token ? { pageToken: token } : {}) });
@@ -475,23 +647,42 @@ async function scanVideos(win){
       const t = new Date(s.publishedAt);
       if (!newest || t > newest) newest = t;
       if (!oldest || t < oldest) oldest = t;
-      if (looksLikeHighlight(s.title || '')) vcache.videos[id] = { id, title: s.title, pub: s.publishedAt };
+      if (looksLikeHighlight(s.title || '')) c.videos[id] = { ...c.videos[id], id, title: s.title, pub: s.publishedAt };
       if (t < stopAt) done = true;
     }
     token = j.nextPageToken;
     if (done || !token) break;
   }
-  if (newest && (!vcache.newest || newest > new Date(vcache.newest))) vcache.newest = newest.toISOString();
-  if (oldest && (!vcache.oldest || oldest < new Date(vcache.oldest))) vcache.oldest = oldest.toISOString();
+  if (newest && (!c.newest || newest > new Date(c.newest))) c.newest = newest.toISOString();
+  if (oldest && (!c.oldest || oldest < new Date(c.oldest))) c.oldest = oldest.toISOString();
   const cutoff = Date.now() - 150 * 86400000;
-  for (const [id, v] of Object.entries(vcache.videos)) if (new Date(v.pub).getTime() < cutoff) delete vcache.videos[id];
+  for (const [id, v] of Object.entries(c.videos)) if (new Date(v.pub).getTime() < cutoff) delete c.videos[id];
   saveV();
+}
+
+/* ---------- Video lengths (videos.list — 1 quota unit per 50 videos) ---------- */
+const EXT_MIN_SECS = 6 * 60;   // titles don't always say "extended", so length decides
+const isoSecs = d => { const m = /P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(d || ''); return m ? (+m[1]||0)*86400 + (+m[2]||0)*3600 + (+m[3]||0)*60 + (+m[4]||0) : 0; };
+const fmtDur = s => { if (!s || s < 0) return ''; const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2,'0')}:${x}` : `${m}:${x}`; };
+async function fillDurations(){
+  const all = {};
+  Object.values(vcache.ch).forEach(c => Object.values(c.videos).forEach(v => { if (v.dur == null) all[v.id] = v; }));
+  const ids = Object.keys(all);
+  for (let i = 0; i < ids.length; i += 50) {
+    const batch = ids.slice(i, i + 50);
+    const j = await yt('/videos', { part:'contentDetails', id: batch.join(','), maxResults: 50 });
+    const got = {}; (j.items || []).forEach(it => got[it.id] = isoSecs(it.contentDetails && it.contentDetails.duration));
+    batch.forEach(id => { all[id].dur = got[id] ?? -1; });
+  }
+  if (ids.length) saveV();
+  return ids.length > 0;
 }
 
 /* ---------- Match videos to games by team names ---------- */
 const norm = s => ' ' + String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  .replace(/&/g, ' and ').replace(/[^a-z0-9']+/g, ' ').trim() + ' ';
+  .replace(/ø/g, 'o').replace(/&/g, ' and ').replace(/[^a-z0-9']+/g, ' ').trim() + ' ';
 const ALIAS_RAW = {
+  // Premier League
   'Manchester United':['Man United','Man Utd','Manchester Utd'], 'Manchester City':['Man City'],
   'Tottenham Hotspur':['Tottenham','Spurs'], 'Wolverhampton Wanderers':['Wolves','Wolverhampton'],
   'Brighton & Hove Albion':['Brighton'], 'AFC Bournemouth':['Bournemouth'], 'Nottingham Forest':["Nott'm Forest",'Forest'],
@@ -499,11 +690,23 @@ const ALIAS_RAW = {
   'Sheffield United':['Sheffield Utd','Sheff Utd'], 'Sheffield Wednesday':['Sheff Wed'], 'Leicester City':['Leicester'],
   'Ipswich Town':['Ipswich'], 'Crystal Palace':['Palace'], 'Aston Villa':['Villa'], 'West Bromwich Albion':['West Brom'],
   'Queens Park Rangers':['QPR'], 'Norwich City':['Norwich'], 'Coventry City':['Coventry'], 'Hull City':['Hull'],
-  'Stoke City':['Stoke'], 'Cardiff City':['Cardiff'], 'Swansea City':['Swansea'], 'Middlesbrough':['Boro']
+  'Stoke City':['Stoke'], 'Cardiff City':['Cardiff'], 'Swansea City':['Swansea'], 'Middlesbrough':['Boro'],
+  // Champions League regulars (as titled by CBS Sports Golazo)
+  'Paris Saint-Germain':['PSG','Paris SG','Paris'], 'Bayern Munich':['Bayern','Bayern Munchen','Bayern Muenchen'],
+  'Internazionale':['Inter','Inter Milan'], 'AC Milan':['Milan'], 'Borussia Dortmund':['Dortmund','BVB'],
+  'Bayer Leverkusen':['Leverkusen'], 'Atletico Madrid':['Atletico','Atleti','Atletico de Madrid'], 'Real Madrid':['Madrid'],
+  'Club Brugge':['Brugge','Club Bruges'], 'PSV Eindhoven':['PSV'], 'Juventus':['Juve'], 'Olympique de Marseille':['Marseille'],
+  'AS Monaco':['Monaco'], 'Sporting CP':['Sporting','Sporting Lisbon'], 'FC Porto':['Porto'], 'Shakhtar Donetsk':['Shakhtar'],
+  'Red Bull Salzburg':['Salzburg'], 'RB Leipzig':['Leipzig'], 'Eintracht Frankfurt':['Frankfurt'], 'FC Copenhagen':['Copenhagen'],
+  'Slavia Prague':['Slavia Praha','Slavia'], 'Union St.-Gilloise':['Union SG','Union Saint-Gilloise','Union St-Gilloise'],
+  'Bodo/Glimt':['Bodo Glimt','Bodo'], 'Kairat Almaty':['Kairat'], 'Athletic Club':['Athletic Bilbao','Athletic'],
+  'Olympiacos':['Olympiakos'], 'Qarabag FK':['Qarabag'], 'Dinamo Zagreb':['Dinamo Zagreb'], 'Celtic':['Celtic'],
+  'Benfica':['Benfica'], 'Feyenoord':['Feyenoord'], 'Galatasaray':['Galatasaray'], 'Atalanta':['Atalanta'], 'Napoli':['Napoli']
 };
 const ALIAS = {};
 for (const [k, v] of Object.entries(ALIAS_RAW)) ALIAS[norm(k).trim()] = v.map(a => norm(a).trim());
-const SKIP_FIRST = new Set(['manchester','west','sheffield','aston','crystal','nottingham','queens','afc','fc']);
+const SKIP_FIRST = new Set(['manchester','west','sheffield','aston','crystal','nottingham','queens','afc','fc','real','club','sporting',
+  'olympique','borussia','bayer','red','union','athletic','eintracht','dinamo','paris','inter']);
 const aliasMemo = {};
 function aliases(t){
   if (aliasMemo[t.name]) return aliasMemo[t.name];
@@ -515,31 +718,38 @@ function aliases(t){
   return aliasMemo[t.name] = [...set].filter(a => a.length >= 3);
 }
 function findVideos(g){
+  const comp = COMPS[g.comp];
   const ha = aliases(g.home), aa = aliases(g.away);
-  const lo = g.date.getTime() - 3 * 3600e3, hi = g.date.getTime() + 6 * 86400e3;
-  let ext = null, short = null;
-  for (const v of Object.values(vcache.videos)) {
+  const lo = g.date.getTime() - 3 * 3600e3, hi = g.date.getTime() + comp.maxDays * 86400e3;
+  const hits = [];
+  for (const v of Object.values(chan(handleFor(g.comp)).videos)) {
     const t = new Date(v.pub).getTime();
-    if (t < lo || t > hi) continue;
+    if (t < lo || t > hi || v.dur === -1) continue;
+    if (comp.exclude && comp.exclude.test(v.title)) continue;
+    if (/condensed|reaction|preview|analysis|full match|press conference/i.test(v.title)) continue;
     const n = norm(v.title);
     if (!ha.some(a => n.includes(' ' + a + ' ')) || !aa.some(a => n.includes(' ' + a + ' '))) continue;
-    if (/extended/i.test(v.title)) { if (!ext || t < new Date(ext.pub).getTime()) ext = v; }
-    else if (!/condensed|reaction|preview|analysis|full match/i.test(v.title)) { if (!short) short = v; }
+    hits.push(v);
   }
+  const isExt = v => /extended/i.test(v.title) || (v.dur || 0) >= EXT_MIN_SECS;
+  const ext = hits.filter(isExt).sort((a, b) => (b.dur || 0) - (a.dur || 0))[0] || null;
+  const short = hits.filter(v => !isExt(v)).sort((a, b) => (b.dur || 0) - (a.dur || 0))[0] || null;
   return { ext, short };
 }
 
 /* ---------- Teams helpers ---------- */
-function teamList(){
-  const map = {};
-  (standings ? standings.rows : []).forEach(r => map[r.name] = { name: r.name, short: r.short, logo: r.logo });
-  games.forEach(g => [g.home, g.away].forEach(t => { if (!map[t.name]) map[t.name] = { name: t.name, short: t.short, logo: t.logo }; }));
-  return Object.values(map);
+function teamGroups(){
+  const seenN = new Set(), groups = { pl: [], ucl: [] };
+  const add = (comp, t) => { if (!t || seenN.has(t.name)) return; seenN.add(t.name); groups[comp].push({ name: t.name, short: t.short, logo: t.logo }); };
+  COMP_KEYS.forEach(c => (standings[c] ? standings[c].rows : []).forEach(r => add(c, r)));
+  games.forEach(g => [g.home, g.away].forEach(t => add(g.comp, t)));
+  return groups;
 }
-const teamInfo = name => teamList().find(t => t.name === name) || { name, short: name, logo: '' };
+const teamInfo = name => { const g = teamGroups(); return [...g.pl, ...g.ucl].find(t => t.name === name) || { name, short: name, logo: '' }; };
+const compBadge = (c, extra) => `<span class="comp ${c}">${COMPS[c].short}${extra ? ' · ' + esc(extra) : ''}</span>`;
 
 /* ---------- Render: tabs ---------- */
-const TITLES = { matches:'Matches', table:'Table', me:'Me' };
+const TITLES = { matches:'Matches', table:'Tables', me:'Me' };
 function renderAll(){
   ['matches','table','me'].forEach(t => $('#tab-' + t).hidden = tab !== t);
   $('#verBox').hidden = tab !== 'me';
@@ -553,11 +763,12 @@ function renderAll(){
 /* ---------- Render: matches ---------- */
 function renderMatches(){
   const win = windowFor(weekOffset);
+  $('#kind').textContent = win.weekend ? 'Weekend · Fri – Mon' : 'Midweek · Tue – Thu';
   $('#range').textContent = fmtRange(win);
   $('#todayBtn').hidden = weekOffset === 0;
   document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.f === filter));
   $('#banner').innerHTML = apiKey() ? '' :
-    `<div class="banner">Add a YouTube API key to find the NBC Sports videos. <button data-act="goSettings">Open settings</button></div>`;
+    `<div class="banner">Add a YouTube API key to find the highlight videos. <button data-act="goSettings">Open settings</button></div>`;
 
   const rows = games.map(g => ({ g, v: findVideos(g) }));
   const n = games.filter(g => seen(g.id)).length;
@@ -571,7 +782,7 @@ function renderMatches(){
 
   const shown = rows.filter(r => filter === 'all' ? true : filter === 'unwatched' ? !seen(r.g.id) : isReady(r));
 
-  if (!games.length) { $('#list').innerHTML = `<div class="empty-state">${loading ? 'Loading matches…' : 'No Premier League matches this week'}</div>`; return; }
+  if (!games.length) { $('#list').innerHTML = `<div class="empty-state">${loading ? 'Loading matches…' : 'No matches in this window'}</div>`; return; }
   if (!shown.length) { $('#list').innerHTML = `<div class="empty-state">${filter === 'ready' ? 'No new videos yet' : 'All caught up 🎉'}</div>`; return; }
 
   let html = '';
@@ -612,12 +823,13 @@ function card({ g, v }){
   else if (v.short) vbadge = `<span class="pill short">Highlights ready</span>`;
   else if (g.completed) vbadge = `<span class="pill wait">${apiKey() ? 'Awaiting video' : 'No API key'}</span>`;
 
-  const yt = id => `https://www.youtube.com/watch?v=${esc(id)}`;
+  const src = COMPS[g.comp].source;
+  const ytl = id => `https://www.youtube.com/watch?v=${esc(id)}`;
   let watch = '';
-  if (v.ext) watch = `<a class="watch" href="${yt(v.ext.id)}" target="_blank" rel="noopener">
-      <span class="pi"></span><span class="wt"><b>Watch extended highlights</b><small>NBC Sports · YouTube</small></span><span class="go">›</span></a>`;
-  else if (v.short) watch = `<a class="watch short" href="${yt(v.short.id)}" target="_blank" rel="noopener">
-      <span class="pi"></span><span class="wt"><b>Watch highlights</b><small>Extended version not posted yet</small></span><span class="go">›</span></a>`;
+  if (v.ext) watch = `<a class="watch" href="${ytl(v.ext.id)}" target="_blank" rel="noopener">
+      <span class="pi"></span><span class="wt"><b>Watch extended highlights</b><small>${v.ext.dur > 0 ? fmtDur(v.ext.dur) + ' · ' : ''}${esc(src)} · YouTube</small></span><span class="go">›</span></a>`;
+  else if (v.short) watch = `<a class="watch short" href="${ytl(v.short.id)}" target="_blank" rel="noopener">
+      <span class="pi"></span><span class="wt"><b>Watch highlights</b><small>${v.short.dur > 0 ? fmtDur(v.short.dur) + ' · short version — extended not up yet' : esc(src) + ' · YouTube'}</small></span><span class="go">›</span></a>`;
 
   const rgb = c => c.join(',');
   const H = teamRGB(g.home), A = teamRGB(g.away);
@@ -625,7 +837,7 @@ function card({ g, v }){
   const dis = started ? '' : 'disabled';
 
   return `<article class="card ${s ? 'seen' : ''} ${fav ? 'fav' : ''}" style="${style}">
-    <div class="top">${state}${vbadge}</div>
+    <div class="top"><span class="tl">${compBadge(g.comp, g.round)}${state}</span>${vbadge}</div>
     <div class="teams" ${hidden ? `data-act="reveal" data-id="${esc(g.id)}"` : ''}>${team(g.home, 'h')}${team(g.away, 'a')}
       ${hidden ? '<div class="reveal-hint">Tap to reveal score</div>' : ''}</div>
     ${watch}
@@ -636,17 +848,12 @@ function card({ g, v }){
   </article>`;
 }
 
-/* ---------- Render: table ---------- */
-function renderTable(){
-  const el = $('#tableBody');
-  if (!standings || !standings.rows.length) { el.innerHTML = `<div class="empty-state">${esc(tableErr || 'Loading table…')}</div>`; return; }
-  if (settings.hideScores && !tableRevealed) {
-    el.innerHTML = `<div class="gate"><div class="t">Spoiler shield is on</div><p>The table gives away results you haven't watched yet.</p><button class="btn" data-act="showTable">Show table</button></div>`;
-    return;
-  }
-  const hexA = (c, a) => { const m = /^#?([0-9a-f]{6})$/i.exec(c || ''); if (!m) return 'transparent'; const n = parseInt(m[1], 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+/* ---------- Render: tables + bracket ---------- */
+const hexA = (c, a) => { const m = /^#?([0-9a-f]{6})$/i.exec(c || ''); if (!m) return 'transparent'; const n = parseInt(m[1], 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+function tableHTML(st){
+  if (!st || !st.rows.length) return `<div class="empty-state">${esc(tableErr || 'Loading table…')}</div>`;
   let html = `<div class="tbl"><div class="tr th"><span class="pos">#</span><span class="tm">Club</span><span>P</span><span>W</span><span>D</span><span>L</span><span>GD</span><span class="pts">Pts</span></div>`;
-  for (const r of standings.rows) {
+  for (const r of st.rows) {
     const zc = r.note && r.note.color;
     html += `<div class="tr ${favs.includes(r.name) ? 'fav' : ''}">
       <span class="pos" style="--zb:${hexA(zc, .35)}">${r.rank || ''}</span>
@@ -656,30 +863,72 @@ function renderTable(){
   }
   html += '</div>';
   const notes = {};
-  standings.rows.forEach(r => { if (r.note && r.note.description) notes[r.note.description] = r.note.color; });
+  st.rows.forEach(r => { if (r.note && r.note.description) notes[r.note.description] = r.note.color; });
   html += `<div class="legend">${Object.entries(notes).map(([d, c]) => `<span><i style="background:${esc(c)}"></i>${esc(d)}</span>`).join('')}</div>`;
+  return html;
+}
+function bracketHTML(rounds){
+  const tieHTML = (t, isFinal) => {
+    const fav = t.teams.some(x => favs.includes(x.name));
+    const legs = t.legs.map(l => l.date.toLocaleDateString([], { month:'short', day:'numeric' })).join(' · ');
+    const row = x => `<div class="tt ${t.winner ? (t.winner === x.name ? 'win' : 'out') : ''}">
+        ${x.logo ? `<img src="${esc(x.logo)}" alt="" loading="lazy">` : '<span class="nologo"></span>'}
+        <span class="nm">${esc(x.short)}${favs.includes(x.name) ? ' <span class="star">★</span>' : ''}</span>
+        <span class="ag">${t.started ? x.agg : ''}</span></div>`;
+    return `<div class="tie ${fav ? 'fav' : ''}">${row(t.teams[0])}${row(t.teams[1])}
+      <div class="lg">${t.done ? (isFinal ? 'Final' : 'Aggregate') : t.started ? (isFinal ? 'In progress' : 'Aggregate so far') : 'Upcoming'} · ${esc(legs)}</div></div>`;
+  };
+  return `<div class="bracket">${rounds.map(r => `<div class="bcol"><h4>${esc(r.label)}</h4>
+    ${r.ties.map(t => tieHTML(t, /^final$/i.test(r.label.trim()))).join('')}</div>`).join('')}</div>`;
+}
+function renderTable(){
+  const el = $('#tableBody');
+  if (settings.hideScores && !tableRevealed) {
+    el.innerHTML = `<div class="gate"><div class="t">Spoiler shield is on</div><p>The tables and bracket give away results you haven't watched yet.</p><button class="btn" data-act="showTable">Show tables</button></div>`;
+    return;
+  }
+  const rounds = buildBracket();
+  let html = `<div class="sec">${compBadge('pl')}Premier League</div>` + tableHTML(standings.pl);
+  html += `<div class="sec">${compBadge('ucl')}Champions League</div>`;
+  if (rounds.length) {
+    html += `<p class="note" style="margin:-4px 4px 10px">Knockout stage — swipe across the rounds.</p>` + bracketHTML(rounds) +
+            `<details class="lp"><summary>League phase table</summary>${tableHTML(standings.ucl)}</details>`;
+  } else {
+    html += tableHTML(standings.ucl);
+  }
   el.innerHTML = html;
 }
 
 /* ---------- Render: me ---------- */
 function renderMe(){
-  const list = Object.entries(watched).map(([id, e]) => ({ id, ...e }));
+  const list = Object.entries(watched).map(([id, e]) => ({ id, ...e, c: e.c || 'pl' }));
   const now = new Date();
   const seasonStart = new Date(now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1, 6, 1);
   const seenAll = list.filter(e => e.h || e.f);
-  const seenSeason = seenAll.filter(e => !e.date || new Date(e.date) >= seasonStart).length;
+  const inSeason = e => !e.date || new Date(e.date) >= seasonStart;
   const hl = list.filter(e => e.h).length, full = list.filter(e => e.f).length, both = list.filter(e => e.h && e.f).length;
   const favSeen = favs.length ? seenAll.filter(e => favs.includes(e.home) || favs.includes(e.away)).length : null;
-  const pct = seenSeason && seenSeason < 4 ? '<1' : Math.round(seenSeason / 380 * 100);
+  const pctOf = (n, tot) => n && n / tot < .005 ? '<1' : Math.round(n / tot * 100);
+
+  const per = COMP_KEYS.map(c => {
+    const all = seenAll.filter(e => e.c === c);
+    const season = all.filter(inSeason).length;
+    return { c, n: all.length, season, pct: pctOf(season, COMPS[c].matches) };
+  });
 
   let html = `<div class="tiles">
     <div class="tile hero"><div class="n">${seenAll.length}</div><div class="k">Matches seen</div>
-      <span class="sub">${pct}% of the 380-match season</span></div>
+      <div class="subs">${per.map(p => `<span class="sub">${COMPS[p.c].short} ${p.n} · ${p.pct}% of season</span>`).join('')}</div></div>
     <div class="tile c-mint"><div class="n">${hl}</div><div class="k">Highlights watched</div></div>
     <div class="tile c-violet"><div class="n">${full}</div><div class="k">Live / full matches</div></div>
     <div class="tile c-amber"><div class="n">${favSeen == null ? '–' : favSeen}</div><div class="k">${favSeen == null ? 'Pick a favorite below' : 'Your teams’ games'}</div></div>
     <div class="tile c-sky"><div class="n">${both}</div><div class="k">Seen both ways</div></div>
   </div>`;
+
+  // competition split
+  const maxC = Math.max(1, ...per.map(p => p.n));
+  html += `<div class="lbl">By competition</div><div class="bars">` + per.map(p => `<div class="b cb">
+      ${compBadge(p.c)}<span class="nm">${COMPS[p.c].name}</span><span class="track"><i class="${p.c}" style="width:${p.n / maxC * 100}%"></i></span><span class="c">${p.n}</span></div>`).join('') + `</div>`;
 
   const counts = {};
   seenAll.forEach(e => [e.home, e.away].forEach(t => { if (t) counts[t] = (counts[t] || 0) + 1; }));
@@ -695,17 +944,20 @@ function renderMe(){
   const recent = seenAll.filter(e => e.home).sort((a, b) => Math.max(b.h || 0, b.f || 0) - Math.max(a.h || 0, a.f || 0)).slice(0, 6);
   if (recent.length) {
     html += `<div class="lbl">Recently watched</div><div class="recent">` + recent.map(e => `<div class="it">
-      ${e.h ? '<span class="tag">Highlights</span>' : ''}${e.f ? '<span class="tag f">Full</span>' : ''}
+      ${compBadge(e.c)}${e.h ? '<span class="tag">HL</span>' : ''}${e.f ? '<span class="tag f">Full</span>' : ''}
       <span class="m">${esc(teamInfo(e.home).short)} v ${esc(teamInfo(e.away).short)}</span>
       <span class="d">${e.date ? new Date(e.date).toLocaleDateString([], { month:'short', day:'numeric' }) : ''}</span></div>`).join('') + `</div>`;
   }
   if (!seenAll.length) html += `<p class="note" style="margin:14px 4px 0">Mark matches as Highlights or Live / Full and your stats build up here.</p>`;
   $('#meStats').innerHTML = html;
 
-  const teams = teamList().sort((a, b) => a.short.localeCompare(b.short));
-  $('#favGrid').innerHTML = teams.length ? teams.map(t => `<button class="tpick ${favs.includes(t.name) ? 'on' : ''}" data-act="fav" data-name="${esc(t.name)}">
-      ${t.logo ? `<img src="${esc(t.logo)}" alt="" loading="lazy">` : ''}<span>${esc(t.short)}</span></button>`).join('')
-    : `<p class="note">Teams load with the table.</p>`;
+  const groups = teamGroups();
+  const pick = t => `<button class="tpick ${favs.includes(t.name) ? 'on' : ''}" data-act="fav" data-name="${esc(t.name)}">
+      ${t.logo ? `<img src="${esc(t.logo)}" alt="" loading="lazy">` : ''}<span>${esc(t.short)}</span></button>`;
+  $('#favWrap').innerHTML = COMP_KEYS.map(c => groups[c].length
+      ? `<div class="fsub">${compBadge(c)}${c === 'ucl' ? 'Champions League (other clubs)' : COMPS[c].name}</div>
+         <div class="teams-grid">${groups[c].sort((a, b) => a.short.localeCompare(b.short)).map(pick).join('')}</div>` : '').join('')
+    || `<p class="note">Teams load with the tables.</p>`;
 }
 
 function setStatus(msg, err){ const s = $('#status'); s.textContent = msg; s.classList.toggle('err', !!err); }
@@ -736,7 +988,7 @@ async function gh(path, opts = {}){
 function snapshot(){
   return { v:1, watched, favs:{ list:favs, u:favsU },
     // API key deliberately NOT synced — secret gists are readable by anyone with the link
-    prefs:{ handle:settings.handle, hideScores:settings.hideScores, refreshMin:settings.refreshMin, u:settings.u || 0 } };
+    prefs:{ handles:settings.handles, hideScores:settings.hideScores, refreshMin:settings.refreshMin, u:settings.u || 0 } };
 }
 function mergeIn(remote){
   let changed = false;
@@ -746,7 +998,9 @@ function mergeIn(remote){
   if (remote.favs && (remote.favs.u || 0) > favsU) { favs = remote.favs.list || []; favsU = remote.favs.u; changed = true; }
   const p = remote.prefs;
   if (p && (p.u || 0) > (settings.u || 0)) {
-    ['handle','hideScores','refreshMin','u'].forEach(k => { if (k in p) settings[k] = p[k]; });
+    ['handles','hideScores','refreshMin','u'].forEach(k => { if (k in p) settings[k] = p[k]; });
+    if (p.handle && !p.handles) settings.handles = { ...settings.handles, pl: p.handle };
+    settings.handles = settings.handles || {};
     changed = true;
   }
   if (changed) {
@@ -855,19 +1109,25 @@ async function refresh(force){
   syncNow();
   checkVersion();
   try {
-    const [gr, sr] = await Promise.allSettled([fetchGames(win), fetchStandings()]);
-    if (sr.status === 'rejected') tableErr = sr.reason.message;
+    const [gr, ...sr] = await Promise.allSettled([fetchGames(win), ...COMP_KEYS.map(fetchStandings)]);
+    const bad = sr.find(x => x.status === 'rejected');
+    tableErr = bad ? bad.reason.message : '';
     if (myOffset !== weekOffset) return;
     if (gr.status === 'fulfilled') games = gr.value; else errMsg = gr.reason.message;
     renderAll();
+    try { if (await refreshBracket(force)) renderAll(); } catch (e) { /* bracket is best-effort */ }
     if (apiKey() && gr.status === 'fulfilled') {
-      const need = games.some(x => x.completed && !findVideos(x).ext);
-      const covered = vcache.oldest && new Date(vcache.oldest) <= new Date(win.start.getTime() - 86400000);
-      if (need && (force || !covered || Date.now() - lastYT > 120000)) {
-        lastYT = Date.now();
-        try { await scanVideos(win); } catch (e) { errMsg = e.message; }
+      for (const c of COMP_KEYS) {
+        const h = handleFor(c), ch = chan(h);
+        const need = games.some(x => x.comp === c && x.completed && !findVideos(x).ext);
+        const covered = ch.oldest && new Date(ch.oldest) <= new Date(win.start.getTime() - 86400000);
+        if (need && (force || !covered || Date.now() - (lastYT[h] || 0) > 120000)) {
+          lastYT[h] = Date.now();
+          try { await scanVideos(win, h); } catch (e) { errMsg = errMsg || e.message; }
+        }
       }
     }
+    if (apiKey()) { try { if (await fillDurations()) renderAll(); } catch (e) { errMsg = errMsg || e.message; } }
     const t = new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' });
     errMsg ? setStatus(errMsg, true) : setStatus('Updated ' + t);
   } catch (e) {
@@ -888,13 +1148,15 @@ document.addEventListener('visibilitychange', () => {
 
 /* ---------- Interactions ---------- */
 function fillSettings(){
-  $('#apiKey').value = settings.apiKey; $('#handle').value = settings.handle;
+  $('#apiKey').value = settings.apiKey;
+  $('#handlePL').value = handleFor('pl'); $('#handleUCL').value = handleFor('ucl');
   $('#hideScores').checked = settings.hideScores; $('#refreshMin').value = String(settings.refreshMin);
   $('#ghToken').value = sync.token || '';
   $('#syncOffBtn').hidden = !sync.token;
 }
 function goWeek(o){ weekOffset = o; games = []; revealed = {}; renderAll(); refresh(); }
 function setTab(t){ tab = t; LS.set('plh.tab', t); renderAll(); window.scrollTo(0, 0); }
+const cleanHandle = (v, d) => { v = (v || '').trim() || d; return v.startsWith('@') ? v : '@' + v; };
 
 $('#refreshBtn').addEventListener('click', () => refresh(true));
 document.addEventListener('click', e => {
@@ -904,7 +1166,7 @@ document.addEventListener('click', e => {
     const g = games.find(x => x.id === id); if (!g) return;
     const k = el.dataset.kind, entry = watched[id] || {};
     entry[k] = entry[k] ? 0 : Date.now();   // keep un-marks as 0 so they sync too
-    Object.assign(entry, { home: g.home.name, away: g.away.name, date: g.date.toISOString(), u: Date.now() });
+    Object.assign(entry, { home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp, u: Date.now() });
     watched[id] = entry;
     LS.set('plh.watched', watched); renderMatches(); queueSync();
   }
@@ -924,8 +1186,7 @@ document.addEventListener('click', e => {
   else if (act === 'goSettings') { setTab('me'); fillSettings(); setTimeout(() => $('#settings').scrollIntoView({ behavior:'smooth' }), 50); }
   else if (act === 'saveSettings') {
     settings.apiKey = $('#apiKey').value.trim();
-    settings.handle = $('#handle').value.trim() || '@NBCSports';
-    if (!settings.handle.startsWith('@')) settings.handle = '@' + settings.handle;
+    settings.handles = { pl: cleanHandle($('#handlePL').value, COMPS.pl.handle), ucl: cleanHandle($('#handleUCL').value, COMPS.ucl.handle) };
     settings.hideScores = $('#hideScores').checked;
     settings.refreshMin = Number($('#refreshMin').value);
     settings.u = Date.now();
@@ -951,7 +1212,8 @@ document.addEventListener('click', e => {
   }
   else if (act === 'closeModal') hideModal();
   else if (act === 'resetCache') {
-    vcache = emptyV(); saveV();
+    vcache = { ver: VCACHE_VER, ch: {} }; saveV();
+    bracket = null; LS.set('plh.bracket', null);
     setStatus('Video list cleared'); refresh(true);
   }
 });
