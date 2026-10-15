@@ -10,6 +10,7 @@
 <meta name="theme-color" content="#f3f5f4">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
+<script>try{var a=(JSON.parse(localStorage.getItem('plh.settings')||'{}').appearance)||'auto';if(a==='dark'||(a==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -235,10 +236,84 @@ details.lp[open] summary::after{content:" ▴"}
 .fsub{display:flex;align-items:center;gap:8px;margin:14px 4px 8px;font:600 13.5px var(--fb);color:var(--muted)}
 .tile .subs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .tile .subs .sub{margin-top:0}
-.bars .b.cb{grid-template-columns:auto 1fr 1fr 24px}
+.bars .b.cb{grid-template-columns:auto minmax(0,1.6fr) 1fr 24px}
 .bars .track i.pl{background:linear-gradient(90deg,#5b1a7a,#a24bc4)}
 .bars .track i.ucl{background:linear-gradient(90deg,#1e3fae,#5c8cff)}
 .recent .it .comp{font-size:10px;padding:3px 7px}
+
+/* Goal scorers + red cards */
+.evs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 0;padding-top:7px;border-top:1px dashed var(--line2);font:500 11.5px/1.45 var(--fb);color:var(--muted)}
+.evs .r{text-align:right}
+.evs .ev{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evs .ev i{font-style:normal;color:var(--dim)}
+.evs .rc{display:inline-block;width:7px;height:10px;border-radius:2px;background:#e5484d;margin-right:4px;vertical-align:-1px}
+.card.seen .evs{opacity:.6}
+
+/* Dark mode (follows iPhone setting, or forced in Settings) */
+.dark{--bg:#0e1311;--s1:#161d1a;--s2:#1c2521;--s3:#27322d;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.13);
+  --text:#eef3f0;--muted:#9aa7a1;--dim:#68756f;--mint:#3fe39a;--sky:#5bb8ff;--violet:#a690ff;--amber:#ffc24f;--coral:#ff6f78;
+  --mintbg:rgba(63,227,154,.14);--skybg:rgba(91,184,255,.14);--violetbg:rgba(166,144,255,.16);--amberbg:rgba(255,194,79,.14);--coralbg:rgba(255,111,120,.14);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.28);color-scheme:dark}
+.dark body::before{opacity:.7}
+.dark .head{background:rgba(14,19,17,.84)}
+.dark .tabbar{background:rgba(22,29,26,.88);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.dark .pill{background:rgba(255,255,255,.06)}
+.dark .pill.ready,.dark .tag,.dark .act.on[data-kind=h],.dark .tb.on[data-t=matches]{background:var(--mintbg);color:var(--mint)}
+.dark .act.on[data-kind=h]{border-color:rgba(63,227,154,.45)}
+.dark .pill.short,.dark .tag.f,.dark .act.on[data-kind=f],.dark .tb.on[data-t=me]{background:var(--violetbg);color:var(--violet)}
+.dark .act.on[data-kind=f]{border-color:rgba(166,144,255,.5)}
+.dark .pill.wait{background:var(--amberbg);color:var(--amber)}
+.dark .tb.on[data-t=table]{background:var(--skybg);color:var(--sky)}
+.dark .act{background:rgba(255,255,255,.04)}
+.dark .act.on .ck::after{border-color:var(--bg)}
+.dark .watch.short{background:rgba(166,144,255,.1)}
+.dark .q{background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.05))}
+.dark .chip.on[data-f=all]{color:var(--bg)}
+.dark .chip.on[data-f=all] .n{background:rgba(0,0,0,.15);color:var(--bg)}
+.dark .tile.c-mint{background:linear-gradient(160deg,rgba(63,227,154,.14),var(--s1) 75%)}
+.dark .tile.c-violet{background:linear-gradient(160deg,rgba(166,144,255,.16),var(--s1) 75%)}
+.dark .tile.c-amber{background:linear-gradient(160deg,rgba(255,194,79,.14),var(--s1) 75%)}
+.dark .tile.c-sky{background:linear-gradient(160deg,rgba(91,184,255,.14),var(--s1) 75%)}
+.dark .tpick.on{background:var(--amberbg);color:var(--amber)}
+.dark .tr.fav .tm b{color:var(--amber)}
+.dark .gate{background:linear-gradient(135deg,rgba(166,144,255,.16),rgba(91,184,255,.08));border-color:rgba(166,144,255,.25)}
+.dark .modal{background:rgba(0,0,0,.5)}
+.dark .modal .badge{background:var(--skybg)}
+.dark .modal .badge.new{background:var(--mintbg);color:var(--mint)}
+.dark .tie .tt.win .ag{color:var(--mint)}
+.dark .field input:focus,.dark .field select:focus{background:var(--bg)}
+.dark .mark{box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+
+/* Toast */
+.toast{position:fixed;z-index:25;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:14px;padding:11px 12px 11px 18px;border-radius:99px;background:#14201b;color:#fff;font:600 14px var(--fb);
+  box-shadow:0 10px 30px rgba(0,0,0,.3);transition:all .25s;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.14);color:#7ff0b8;font:700 13px var(--fb)}
+.dark .toast{background:#eef3f0;color:#14201b}
+.dark .toast button{background:rgba(0,0,0,.08);color:#0a9a62}
+
+/* Pull to refresh + swipe */
+.ptr{height:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;font:600 12.5px var(--fb);color:var(--muted);transition:height .2s}
+.ptr.drag{transition:none}
+.ptr span{padding-bottom:6px}
+.ptr.ready{color:var(--mint)}
+.slide-l{animation:slideL .28s ease}
+.slide-r{animation:slideR .28s ease}
+@keyframes slideL{from{transform:translateX(28px);opacity:.2}}
+@keyframes slideR{from{transform:translateX(-28px);opacity:.2}}
+.lookahead{display:block;margin:14px auto 0;padding:10px 18px;border-radius:99px;background:var(--mintbg);color:var(--mint);font:700 14px var(--fb)}
+
+/* Advanced settings + share */
+details.adv{margin-top:12px;padding:0}
+details.adv summary{cursor:pointer;list-style:none;padding:15px 16px;font:600 14.5px var(--fb);color:var(--muted);display:flex;justify-content:space-between}
+details.adv summary::-webkit-details-marker{display:none}
+details.adv summary::after{content:"▾"}
+details.adv[open] summary::after{content:"▴"}
+details.adv .inner{padding:0 16px 16px}
+.subhead{font:700 14px var(--fh);margin:6px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+.share{display:inline-flex !important;align-items:center;gap:6px;color:var(--mint) !important}
+.welcome li{border-top:1px solid var(--line)}
 
 /* Version + update popups */
 .ver{margin:26px 0 0;text-align:center}
@@ -285,6 +360,7 @@ details.lp[open] summary::after{content:" ▴"}
   <div class="brand"><small>Reel FC</small><b id="title">Matches</b></div>
   <button class="circ" id="refreshBtn" aria-label="Refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
 </header>
+<div class="ptr" id="ptr"><span id="ptrText">Pull to refresh</span></div>
 
 <main>
   <!-- MATCHES -->
@@ -318,51 +394,59 @@ details.lp[open] summary::after{content:" ▴"}
 
     <div class="lbl" id="settings">Settings</div>
     <div class="panel">
+      <label class="toggle">Spoiler shield — hide scores, tables and bracket until watched<input type="checkbox" id="hideScores"></label>
       <div class="field">
-        <label for="apiKey">YouTube Data API key</label>
-        <input type="password" id="apiKey" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="AIza…">
-        <p id="keyNote">Optional — overrides the key built into the app. Stored only on this device.</p>
+        <label for="appearance">Appearance</label>
+        <select id="appearance"><option value="auto">Match iPhone (light / dark)</option><option value="light">Light</option><option value="dark">Dark</option></select>
       </div>
-      <div class="field">
-        <label for="handlePL">Premier League channel</label>
-        <input type="text" id="handlePL" autocomplete="off" autocapitalize="off" spellcheck="false">
-      </div>
-      <div class="field">
-        <label for="handleUCL">Champions League channel</label>
-        <input type="text" id="handleUCL" autocomplete="off" autocapitalize="off" spellcheck="false">
-      </div>
-      <label class="toggle">Spoiler shield — hide scores, tables and bracket until watched (both competitions)<input type="checkbox" id="hideScores"></label>
-      <div class="field">
+      <div class="field" style="margin-bottom:0">
         <label for="refreshMin">Auto-refresh</label>
         <select id="refreshMin">
           <option value="2">Every 2 minutes</option><option value="5">Every 5 minutes</option>
           <option value="10">Every 10 minutes</option><option value="15">Every 15 minutes</option><option value="30">Every 30 minutes</option>
         </select>
-        <p>Every minute while a match is live.</p>
+        <p>Every minute while a match is live. Changes save automatically.</p>
       </div>
-      <button class="btn" data-act="saveSettings">Save settings</button>
-      <button class="link-btn" data-act="resetCache">Clear saved video list</button>
     </div>
 
-    <div class="lbl" id="syncSec">Sync across devices</div>
-    <div class="panel">
-      <div class="field">
-        <label for="ghToken">GitHub token (gist scope)</label>
-        <input type="password" id="ghToken" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ghp_…">
-        <p>Use the same token on your iPhone and iPad. Watched marks, favorites and display settings sync through a gist on your GitHub account. Your YouTube API key stays on each device.</p>
+    <details class="panel adv" id="advanced">
+      <summary>Advanced</summary>
+      <div class="inner">
+        <div class="field">
+          <label for="apiKey">YouTube Data API key</label>
+          <input type="password" id="apiKey" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Optional">
+          <p>Only needed if the built-in key runs out. Stored only on this device.</p>
+        </div>
+        <div class="field">
+          <label for="handlePL">Premier League channel</label>
+          <input type="text" id="handlePL" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="handleUCL">Champions League channel</label>
+          <input type="text" id="handleUCL" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </div>
+        <button class="link-btn" data-act="resetCache" style="margin:0 0 6px">Clear saved video list</button>
+
+        <div class="subhead" id="syncSec">Sync across devices</div>
+        <div class="field">
+          <label for="ghToken">GitHub token (gist scope)</label>
+          <input type="password" id="ghToken" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ghp_…">
+          <p>Use the same token on each of your devices. Watched marks, favorites and settings sync through a gist on your GitHub account.</p>
+        </div>
+        <button class="btn" data-act="syncSave">Connect &amp; sync</button>
+        <p class="sync-st" id="syncStatus"></p>
+        <button class="link-btn" data-act="syncOff" id="syncOffBtn" hidden>Disconnect this device</button>
       </div>
-      <button class="btn" data-act="syncSave">Connect &amp; sync</button>
-      <p class="sync-st" id="syncStatus"></p>
-      <button class="link-btn" data-act="syncOff" id="syncOffBtn" hidden>Disconnect this device</button>
-    </div>
+    </details>
   </section>
 
   <div class="status" id="status"></div>
   <div class="ver" id="verBox" hidden><b>Reel FC · v<span class="vnum"></span></b>
-    <button data-act="checkUpdate">Check for updates</button><small id="verMsg"></small></div>
+    <button data-act="share" class="share">Share Reel FC</button> <button data-act="checkUpdate">Check for updates</button><small id="verMsg"></small></div>
 </main>
 
 <div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast"><span id="toastMsg"></span><button id="toastBtn" hidden>Undo</button></div>
 
 <nav class="tabbar">
   <button class="tb" data-act="tab" data-t="matches"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/></svg>Matches</button>
@@ -377,7 +461,7 @@ const ESPN_STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/';
 const YT = 'https://www.googleapis.com/youtube/v3';
 const BUILT_IN_KEY = window.PLH_YOUTUBE_KEY || '';   // set in config.js (never replaced by updates)
 // App version — must match version.json in the repo. Bumped with every release.
-const APP_VERSION = '3.0';
+const APP_VERSION = '3.2';
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -417,6 +501,11 @@ if (!vcache || vcache.ver !== VCACHE_VER) {
 }
 const chan = h => vcache.ch[h] || (vcache.ch[h] = { uploads:null, videos:{}, newest:null, oldest:null });
 const saveV = () => LS.set('plh.videos3', vcache);
+// Housekeeping: drop storage left behind by older versions
+try {
+  if (localStorage.getItem('plh.videos3') || vcache.ver === VCACHE_VER) localStorage.removeItem('plh.videos');
+  if (localStorage.getItem('plh.standings2')) localStorage.removeItem('plh.standings');
+} catch (e) {}
 
 let bracket = LS.get('plh.bracket', null);     // { key, rounds:{ label: {at, done, events} } }
 let tab = LS.get('plh.tab', 'matches');
@@ -457,7 +546,7 @@ const ROUNDS = { 'knockout-round-playoffs':'Playoff', 'round-of-16':'R16', 'quar
 function slimSide(c, h){
   const t = (c.competitors || []).find(x => x.homeAway === h) || {};
   const tm = t.team || {};
-  return { name: tm.displayName || '?', short: tm.shortDisplayName || tm.displayName || '?',
+  return { id: String(tm.id || ''), name: tm.displayName || '?', short: tm.shortDisplayName || tm.displayName || '?',
            location: tm.location || '', logo: tm.logo || '', score: t.score ?? '', winner: !!t.winner,
            color: tm.color || '', alt: tm.alternateColor || '' };
 }
@@ -467,7 +556,11 @@ function slimEvent(ev, comp){
   const slug = ev.season && ev.season.slug;
   const leg = ((c.notes || [])[0] || {}).headline || '';
   const rnd = ROUNDS[slug] ? ROUNDS[slug] + (/leg/i.test(leg) ? ' · ' + leg.replace(/(\d)\w*\s*leg/i, 'Leg $1') : '') : '';
-  return { id: ev.id, comp, date: new Date(ev.date), home: slimSide(c, 'home'), away: slimSide(c, 'away'), round: rnd, slug: slug || '',
+  const surname = a => { const n = (a && (a.shortName || a.displayName)) || ''; return n.replace(/^[A-Z]\.\s+/, ''); };
+  const events = (c.details || []).filter(d => (d.scoringPlay && !d.shootout) || d.redCard).map(d => ({
+    team: String((d.team && d.team.id) || ''), min: (d.clock && d.clock.displayValue) || '',
+    who: surname((d.athletesInvolved || [])[0]), red: !!d.redCard && !d.scoringPlay, pen: !!d.penaltyKick, og: !!d.ownGoal }));
+  return { id: ev.id, comp, date: new Date(ev.date), home: slimSide(c, 'home'), away: slimSide(c, 'away'), round: rnd, slug: slug || '', events,
            state: st.state, detail: st.shortDetail || st.detail || '', completed: !!st.completed };
 }
 async function fetchGames(win){
@@ -655,8 +748,9 @@ async function scanVideos(win, handle){
   }
   if (newest && (!c.newest || newest > new Date(c.newest))) c.newest = newest.toISOString();
   if (oldest && (!c.oldest || oldest < new Date(c.oldest))) c.oldest = oldest.toISOString();
-  const cutoff = Date.now() - 150 * 86400000;
+  const cutoff = Date.now() - 60 * 86400000;
   for (const [id, v] of Object.entries(c.videos)) if (new Date(v.pub).getTime() < cutoff) delete c.videos[id];
+  if (c.oldest && new Date(c.oldest).getTime() < cutoff) c.oldest = new Date(cutoff).toISOString();
   saveV();
 }
 
@@ -782,7 +876,12 @@ function renderMatches(){
 
   const shown = rows.filter(r => filter === 'all' ? true : filter === 'unwatched' ? !seen(r.g.id) : isReady(r));
 
-  if (!games.length) { $('#list').innerHTML = `<div class="empty-state">${loading ? 'Loading matches…' : 'No matches in this window'}</div>`; return; }
+  if (!games.length) {
+    $('#list').innerHTML = loading ? `<div class="empty-state">Loading matches…</div>`
+      : `<div class="empty-state">No matches ${win.weekend ? 'this weekend' : 'this midweek'}${win.weekend ? ' — probably an international break' : ''}.
+         <button class="lookahead" data-act="lookAhead">Jump to the next matches →</button></div>`;
+    return;
+  }
   if (!shown.length) { $('#list').innerHTML = `<div class="empty-state">${filter === 'ready' ? 'No new videos yet' : 'All caught up 🎉'}</div>`; return; }
 
   let html = '';
@@ -826,9 +925,9 @@ function card({ g, v }){
   const src = COMPS[g.comp].source;
   const ytl = id => `https://www.youtube.com/watch?v=${esc(id)}`;
   let watch = '';
-  if (v.ext) watch = `<a class="watch" href="${ytl(v.ext.id)}" target="_blank" rel="noopener">
+  if (v.ext) watch = `<a class="watch" href="${ytl(v.ext.id)}" target="_blank" rel="noopener" data-act="watchLink" data-id="${esc(g.id)}">
       <span class="pi"></span><span class="wt"><b>Watch extended highlights</b><small>${v.ext.dur > 0 ? fmtDur(v.ext.dur) + ' · ' : ''}${esc(src)} · YouTube</small></span><span class="go">›</span></a>`;
-  else if (v.short) watch = `<a class="watch short" href="${ytl(v.short.id)}" target="_blank" rel="noopener">
+  else if (v.short) watch = `<a class="watch short" href="${ytl(v.short.id)}" target="_blank" rel="noopener" data-act="watchLink" data-id="${esc(g.id)}">
       <span class="pi"></span><span class="wt"><b>Watch highlights</b><small>${v.short.dur > 0 ? fmtDur(v.short.dur) + ' · short version — extended not up yet' : esc(src) + ' · YouTube'}</small></span><span class="go">›</span></a>`;
 
   const rgb = c => c.join(',');
@@ -836,10 +935,27 @@ function card({ g, v }){
   const style = `--hc:rgba(${rgb(H)},.17);--hc2:rgba(${rgb(H)},.05);--ac2:rgba(${rgb(A)},.05);--ac:rgba(${rgb(A)},.17);--hs:rgb(${rgb(H)});--as:rgb(${rgb(A)})`;
   const dis = started ? '' : 'disabled';
 
+  let evs = '';
+  if (showScore && g.events && g.events.length) {
+    const side = id => {
+      const goals = {}, out = [];
+      g.events.filter(x => x.team === id && !x.red).forEach(x => {
+        const k = x.who + (x.og ? ' (OG)' : '');
+        (goals[k] = goals[k] || []).push(x.min + (x.pen ? ' P' : ''));
+      });
+      Object.entries(goals).forEach(([k, m]) => out.push(`<span class="ev">${esc(k)} <i>${esc(m.join(', '))}</i></span>`));
+      g.events.filter(x => x.team === id && x.red).forEach(x => out.push(`<span class="ev"><b class="rc"></b>${esc(x.who)} <i>${esc(x.min)}</i></span>`));
+      return out.join('');
+    };
+    const hS = side(g.home.id), aS = side(g.away.id);
+    if (hS || aS) evs = `<div class="evs"><div>${hS}</div><div class="r">${aS}</div></div>`;
+  }
+
   return `<article class="card ${s ? 'seen' : ''} ${fav ? 'fav' : ''}" style="${style}">
     <div class="top"><span class="tl">${compBadge(g.comp, g.round)}${state}</span>${vbadge}</div>
     <div class="teams" ${hidden ? `data-act="reveal" data-id="${esc(g.id)}"` : ''}>${team(g.home, 'h')}${team(g.away, 'a')}
       ${hidden ? '<div class="reveal-hint">Tap to reveal score</div>' : ''}</div>
+    ${evs}
     ${watch}
     <div class="acts">
       <button class="act ${e.h ? 'on' : ''}" data-act="mark" data-kind="h" data-id="${esc(g.id)}" ${dis}><span class="ck"></span>Highlights</button>
@@ -1015,7 +1131,7 @@ async function findOrCreateGist(){
   if (hit) sync.gistId = hit.id;
   else {
     const g = await gh('/gists', { method:'POST', body: JSON.stringify({
-      description:'PL Highlights app — sync data', public:false, files:{ [SYNC_FILE]:{ content: stable(snapshot()) } } }) });
+      description:'Reel FC — sync data', public:false, files:{ [SYNC_FILE]:{ content: stable(snapshot()) } } }) });
     sync.gistId = g.id;
   }
   LS.set('plh.sync', sync);
@@ -1039,7 +1155,7 @@ async function syncNow(){
         const changed = mergeIn(remote);
         const out = stable(snapshot());
         if (out !== stable(remote)) {
-          await gh('/gists/' + sync.gistId, { method:'PATCH', body: JSON.stringify({ files:{ [SYNC_FILE]:{ content: out } } }) });
+          await gh('/gists/' + sync.gistId, { method:'PATCH', body: JSON.stringify({ description:'Reel FC — sync data', files:{ [SYNC_FILE]:{ content: out } } }) });
         }
         if (changed) renderAll();
         setSyncStatus('Synced ' + new Date().toLocaleTimeString([], { hour:'numeric', minute:'2-digit' }));
@@ -1088,10 +1204,23 @@ async function checkVersion(manual){
     }
   } catch (e) { if (manual) $('#verMsg').textContent = "Couldn't check right now"; }
 }
+function showWelcome(){
+  showModal(`<span class="badge new">Welcome</span>
+    <h3>Reel FC ⚽</h3><p>Premier League and Champions League highlights, without the spoilers.</p>
+    <ul class="welcome">
+      <li><b>Spoiler shield</b> — scores, scorers and tables stay hidden until you watch or tap to reveal.</li>
+      <li><b>Watch extended highlights</b> opens YouTube and ticks the match off for you.</li>
+      <li>Mark <b>Highlights</b> or <b>Live / Full</b> for anything else you've seen.</li>
+      <li>Star your teams in the <b>Me</b> tab to pin their matches to the top.</li>
+      <li>Swipe left / right between <b>Weekend</b> and <b>Midweek</b>; pull down to refresh.</li>
+    </ul>
+    <div class="row2"><button class="ghost" data-act="pickTeams">Pick my teams</button><button class="btn" data-act="closeModal">Let's go</button></div>`);
+}
 async function showWhatsNew(){
   const last = LS.get('plh.lastVersion', null);
   LS.set('plh.lastVersion', APP_VERSION);
-  if (!last || last === APP_VERSION) return;          // first install or same version — nothing to announce
+  if (!last) { if (!Object.keys(watched).length && !LS.get('plh.welcomed', false)) showWelcome(); LS.set('plh.welcomed', true); return; }
+  if (last === APP_VERSION) return;
   let notes = [];
   try { const v = await fetchVersion(); if (v.version === APP_VERSION) notes = v.notes || []; } catch (e) {}
   showModal(`<span class="badge new">Updated</span>
@@ -1147,14 +1276,86 @@ document.addEventListener('visibilitychange', () => {
 });
 
 /* ---------- Interactions ---------- */
+function applyTheme(){
+  const a = settings.appearance || 'auto';
+  const dark = a === 'dark' || (a === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', dark);
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', dark ? '#0e1311' : '#f3f5f4');
+}
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
+function saveSettings(){
+  const before = apiKey() + handleFor('pl') + handleFor('ucl');
+  settings.apiKey = $('#apiKey').value.trim();
+  settings.handles = { pl: cleanHandle($('#handlePL').value, COMPS.pl.handle), ucl: cleanHandle($('#handleUCL').value, COMPS.ucl.handle) };
+  settings.hideScores = $('#hideScores').checked;
+  settings.refreshMin = Number($('#refreshMin').value);
+  settings.appearance = $('#appearance').value;
+  settings.u = Date.now();
+  LS.set('plh.settings', settings);
+  applyTheme(); queueSync(); toast('Settings saved');
+  if (before !== apiKey() + handleFor('pl') + handleFor('ucl')) refresh(true); else { renderAll(); schedule(); }
+}
+['apiKey','handlePL','handleUCL','hideScores','refreshMin','appearance'].forEach(id => $('#' + id).addEventListener('change', saveSettings));
+
+/* ---------- Toast with optional Undo ---------- */
+let toastTimer = null, toastUndo = null;
+function toast(msg, undo){
+  $('#toastMsg').textContent = msg; toastUndo = undo || null;
+  $('#toastBtn').hidden = !undo;
+  $('#toast').classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('show'), undo ? 6000 : 2200);
+}
+$('#toastBtn').addEventListener('click', () => { if (toastUndo) toastUndo(); toastUndo = null; $('#toast').classList.remove('show'); });
+
+/* ---------- Gestures: swipe between blocks, pull down to refresh ---------- */
+let touch = null;
+document.addEventListener('touchstart', e => {
+  if (e.touches.length !== 1 || !$('#modal').hidden) { touch = null; return; }
+  const t = e.touches[0];
+  touch = { x: t.clientX, y: t.clientY, top: window.scrollY <= 0,
+            skip: !!e.target.closest('.bracket, .chips, input, select, textarea, details summary') };
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (!touch || !touch.top) return;
+  const t = e.touches[0], dy = t.clientY - touch.y, dx = t.clientX - touch.x;
+  if (dy > 10 && Math.abs(dy) > Math.abs(dx)) {
+    const p = $('#ptr'); p.classList.add('drag');
+    p.style.height = Math.min(dy * .5, 56) + 'px';
+    p.classList.toggle('ready', dy > 90);
+    $('#ptrText').textContent = dy > 90 ? 'Release to refresh' : 'Pull to refresh';
+  }
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  if (!touch) return;
+  const t = e.changedTouches[0], dx = t.clientX - touch.x, dy = t.clientY - touch.y;
+  const p = $('#ptr'); p.classList.remove('drag', 'ready'); p.style.height = '0';
+  if (touch.top && dy > 90 && Math.abs(dy) > Math.abs(dx)) refresh(true);
+  else if (tab === 'matches' && !touch.skip && Math.abs(dx) > 70 && Math.abs(dy) < 50) goWeek(weekOffset + (dx < 0 ? 1 : -1));
+  touch = null;
+}, { passive: true });
+
 function fillSettings(){
-  $('#apiKey').value = settings.apiKey;
+  $('#apiKey').value = settings.apiKey; $('#appearance').value = settings.appearance || 'auto';
   $('#handlePL').value = handleFor('pl'); $('#handleUCL').value = handleFor('ucl');
   $('#hideScores').checked = settings.hideScores; $('#refreshMin').value = String(settings.refreshMin);
   $('#ghToken').value = sync.token || '';
   $('#syncOffBtn').hidden = !sync.token;
 }
-function goWeek(o){ weekOffset = o; games = []; revealed = {}; renderAll(); refresh(); }
+function goWeek(o){
+  const dir = o > weekOffset ? 'slide-l' : 'slide-r';
+  weekOffset = o; games = []; revealed = {}; renderAll(); refresh();
+  const l = $('#list'); l.classList.remove('slide-l', 'slide-r'); void l.offsetWidth; l.classList.add(dir);
+}
+async function lookAhead(){
+  const btn = $('.lookahead'); if (btn) { btn.disabled = true; btn.textContent = 'Looking ahead…'; }
+  for (let k = 1; k <= 10; k++) {
+    try {
+      const found = await fetchGames(windowFor(weekOffset + k));
+      if (found.length) { goWeek(weekOffset + k); return; }
+    } catch (e) { break; }
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'No matches found in the next few weeks'; }
+}
 function setTab(t){ tab = t; LS.set('plh.tab', t); renderAll(); window.scrollTo(0, 0); }
 const cleanHandle = (v, d) => { v = (v || '').trim() || d; return v.startsWith('@') ? v : '@' + v; };
 
@@ -1183,15 +1384,25 @@ document.addEventListener('click', e => {
     favsU = Date.now();
     LS.set('plh.favs', favs); LS.set('plh.favsU', favsU); renderMe(); queueSync();
   }
-  else if (act === 'goSettings') { setTab('me'); fillSettings(); setTimeout(() => $('#settings').scrollIntoView({ behavior:'smooth' }), 50); }
-  else if (act === 'saveSettings') {
-    settings.apiKey = $('#apiKey').value.trim();
-    settings.handles = { pl: cleanHandle($('#handlePL').value, COMPS.pl.handle), ucl: cleanHandle($('#handleUCL').value, COMPS.ucl.handle) };
-    settings.hideScores = $('#hideScores').checked;
-    settings.refreshMin = Number($('#refreshMin').value);
-    settings.u = Date.now();
-    LS.set('plh.settings', settings);
-    setStatus('Settings saved'); queueSync(); refresh(true);
+  else if (act === 'goSettings') { setTab('me'); fillSettings(); $('#advanced').open = true; setTimeout(() => $('#advanced').scrollIntoView({ behavior:'smooth' }), 50); }
+  else if (act === 'watchLink') {           // opening the video ticks Highlights (with Undo); the link still opens
+    const g = games.find(x => x.id === id); if (!g) return;
+    const prev = watched[id] ? { ...watched[id] } : null;
+    if (prev && prev.h) return;
+    watched[id] = { ...(prev || {}), h: Date.now(), home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp, u: Date.now() };
+    LS.set('plh.watched', watched); queueSync();
+    setTimeout(renderMatches, 300);
+    toast('Marked as watched', () => {
+      watched[id] = { ...(prev || { home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp }), h: prev ? prev.h || 0 : 0, u: Date.now() };
+      LS.set('plh.watched', watched); queueSync(); renderMatches();
+    });
+  }
+  else if (act === 'lookAhead') lookAhead();
+  else if (act === 'pickTeams') { hideModal(); setTab('me'); setTimeout(() => $('#favWrap').scrollIntoView({ behavior:'smooth', block:'center' }), 80); }
+  else if (act === 'share') {
+    const url = location.origin + location.pathname;
+    if (navigator.share) navigator.share({ title:'Reel FC', text:'Premier League & Champions League extended highlights — no spoilers.', url }).catch(() => {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => toast('Link copied'));
   }
   else if (act === 'syncSave') {
     const t = $('#ghToken').value.trim();
@@ -1219,6 +1430,7 @@ document.addEventListener('click', e => {
 });
 
 document.querySelectorAll('.vnum').forEach(e => e.textContent = APP_VERSION);
+applyTheme();
 fillSettings();
 renderAll();
 showWhatsNew();

@@ -1,10 +1,12 @@
 {
-  "version": "3.0",
+  "version": "3.2",
   "notes": [
-    "Champions League added — extended highlights from CBS Sports Golazo",
-    "Matches now split into Weekend (Fri–Mon) and Midweek (Tue–Thu), with a PL / UCL badge on every match",
-    "Tables tab: Premier League table plus the Champions League table, turning into a knockout bracket from February",
-    "Stats split by competition, and you can star Champions League clubs as favorites",
-    "Spoiler shield covers both competitions"
+    "Dark mode — follows your iPhone, or pick Light/Dark in Settings",
+    "Tapping Watch now ticks the match off automatically (with Undo)",
+    "Swipe left/right between Weekend and Midweek, pull down to refresh",
+    "Empty weeks (international breaks) offer a jump to the next matches",
+    "Simpler Settings: changes save automatically, technical options moved to Advanced",
+    "Share Reel FC button on the Me tab",
+    "Under-the-hood cleanup of old saved data"
   ]
 }
