@@ -1,8 +1,8 @@
 {
-  "version": "3.5",
+  "version": "3.6",
   "notes": [
-    "Full-screen videos: turn your phone sideways and the highlights fill the screen, with controls that fade away while playing",
-    "Full-screen button next to the seek bar — with the phone upright, it turns the player sideways for you",
-    "Tap the picture to bring the controls back"
+    "Fixed: videos no longer sit off to the right of the screen",
+    "Ads now show instead of a waiting screen, with a note that your highlights start right after — so you can tap Skip",
+    "Ad breaks no longer count towards marking a match as watched"
   ]
 }

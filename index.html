@@ -321,11 +321,12 @@ details.lp[open] summary::after{content:" ▴"}
 .player .circ{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.1);box-shadow:none}
 .player .circ svg{stroke:#fff}
 .pframe{position:relative;width:min(100%,calc((100vh - 230px) * 16 / 9));aspect-ratio:16/9;margin:auto auto 0;background:#000;overflow:hidden}
-.pframe iframe,#ytp{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pframe iframe,#ytp{position:absolute;inset:0;width:100%;height:100%;max-width:100%;max-height:100%;border:0}
 .pcover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16px;
   background:radial-gradient(80% 90% at 50% 40%,#173326,#070a09);transition:opacity .2s}
 .pcover.pass{pointer-events:none}
 .pcover.clear{opacity:0}
+.player .pbar small.ad{color:#ffc24f}
 .pcover .big{width:64px;height:64px;border-radius:50%;background:linear-gradient(110deg,#12c27e,#1a93e8);position:relative;box-shadow:0 8px 24px rgba(18,194,126,.35)}
 .pcover .big::after{content:"";position:absolute;left:26px;top:20px;border-left:18px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
 .pcover .big.pause::after{left:22px;top:21px;width:6px;height:22px;border:0;background:#fff;box-shadow:13px 0 0 #fff}
@@ -546,7 +547,7 @@ const ESPN_STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/';
 const YT_API = 'https://www.googleapis.com/youtube/v3';
 const BUILT_IN_KEY = window.PLH_YOUTUBE_KEY || '';   // set in config.js (never replaced by updates)
 // App version — must match version.json in the repo. Bumped with every release.
-const APP_VERSION = '3.5';
+const APP_VERSION = '3.6';
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -994,10 +995,32 @@ function loadYT(){
 }
 function cover(mode, html){
   const c = $('#pcover');
-  c.className = 'pcover' + (mode === 'pass' ? ' pass' : '') + (mode === 'clear' ? ' clear' : '');
+  c.className = 'pcover' + (mode === 'pass' || mode === 'ad' ? ' pass' : '') + (mode === 'clear' || mode === 'ad' ? ' clear' : '');
   if (html != null) c.innerHTML = html;
   if (mode === 'clear') c.dataset.act = 'pToggle'; else delete c.dataset.act;   // while playing, tapping the picture pauses
 }
+// YouTube doesn't say when an ad is playing, so: anything that isn't our highlights playing or a pause we asked for
+// is treated as an ad — the picture is left uncovered (ads don't spoil anything) and the Skip button can be tapped.
+function adMode(on){
+  if (!plState) return;
+  const g = plMatch(), sub = $('#plSub');
+  plState.ad = on;
+  sub.classList.toggle('ad', on);
+  sub.textContent = on ? (plState.started ? 'Ad break — the highlights carry on right after' : 'Ad — your highlights start right after')
+                       : g ? `${COMPS[g.comp].name} · ${COMPS[g.comp].source}` : '';
+  if (on) { cover('ad'); $('#pctl').hidden = true; $('#player').classList.remove('idle'); }
+}
+const expectPause = () => { if (plState) plState.userPause = Date.now(); };
+function sizePlayer(){       // exact pixel size, so iPhone Safari can't draw the video wider than its box
+  const f = $('.pframe');
+  if (pl && pl.setSize && f.offsetWidth) pl.setSize(f.offsetWidth, f.offsetHeight);
+}
+window.addEventListener('resize', () => { if (!$('#player').hidden) setTimeout(sizePlayer, 150); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) expectPause(); });
+window.addEventListener('blur', () => {   // focus moving into the video = it was tapped; if our highlights don't start right away, an ad is up first
+  if (!plState || plState.started || !pl) return;
+  setTimeout(() => { if (plState && !plState.playing && !plState.ended) adMode(true); }, 1200);
+});
 const plMatch = () => plState && games.find(x => x.id === plState.id);
 function playerFoot(){
   const g = plMatch(); if (!g) return;
@@ -1028,7 +1051,7 @@ function endCover(){
 }
 async function openPlayer(id, vid){
   const g = games.find(x => x.id === id); if (!g) return;
-  plState = { id, vid, marked: !!(watched[id] && watched[id].h), ended: false, keep: false };
+  plState = { id, vid, marked: !!(watched[id] && watched[id].h), ended: false, keep: false, started: false, playing: false, ad: false, userPause: 0 };
   $('#plTitle').textContent = `${g.home.short} v ${g.away.short}`;
   $('#plSub').textContent = `${COMPS[g.comp].name} · ${COMPS[g.comp].source}`;
   $('#player').hidden = false; document.body.style.overflow = 'hidden';
@@ -1039,17 +1062,29 @@ async function openPlayer(id, vid){
   try { await loadYT(); } catch (err) { cover('block', `<div class="msg">${esc(err.message)}.</div><div class="pr2"><button class="btn" data-act="ytOut" data-id="${esc(id)}">Open in YouTube</button></div>`); return; }
   if (!plState || plState.vid !== vid) return;
   $('#ytp').replaceWith(Object.assign(document.createElement('div'), { id: 'ytp' }));
+  const f = $('.pframe');
   pl = new window.YT.Player('ytp', {
-    host: 'https://www.youtube-nocookie.com', videoId: vid,
+    width: f.offsetWidth || 640, height: f.offsetHeight || 360, host: 'https://www.youtube-nocookie.com', videoId: vid,
     playerVars: { controls: 0, rel: 0, playsinline: 1, iv_load_policy: 3, disablekb: 1, fs: 0, modestbranding: 1,
                   ...(location.protocol.startsWith('http') ? { origin: location.origin } : {}) },
     events: {
-      onReady: () => { cover('pass', '<div class="big"></div><div class="msg">Tap to play</div>'); pl.playVideo(); },
+      onReady: () => { sizePlayer(); cover('pass', '<div class="big"></div><div class="msg">Tap to play</div><div class="msg" style="opacity:.6;font-size:12.5px">An ad may play first</div>'); pl.playVideo(); },
       onError: () => cover('block', `<div class="msg">This video can only be played on YouTube.</div><div class="pr2"><button class="btn" data-act="ytOut" data-id="${esc(id)}">Open in YouTube</button></div>`),
       onStateChange: ev => {
         const S = window.YT.PlayerState;
-        if (ev.data === S.PLAYING) { if (!plState.ended || plState.keep) cover('clear'); $('#pctl').hidden = false; $('#ppBtn').textContent = '❚❚'; wake(); }
-        else if (ev.data === S.PAUSED) { $('#ppBtn').textContent = '▶'; wake(); if (!plState.ended || plState.keep) cover('block', '<button class="big" data-act="pToggle" aria-label="Play"></button><div class="msg">Paused</div>'); }
+        if (!plState) return;
+        plState.playing = ev.data === S.PLAYING;
+        if (ev.data === S.PLAYING) {
+          plState.started = true; if (plState.ad) adMode(false);
+          if (!plState.ended || plState.keep) cover('clear'); $('#pctl').hidden = false; $('#ppBtn').textContent = '❚❚'; wake();
+        }
+        else if (ev.data === S.BUFFERING && !plState.started) adMode(true);
+        else if (ev.data === S.PAUSED) {
+          $('#ppBtn').textContent = '▶'; wake();
+          if (plState.ended && !plState.keep) return;
+          if (Date.now() - plState.userPause > 1500) adMode(true);      // a pause nobody asked for = mid-video ad break
+          else cover('block', '<button class="big" data-act="pToggle" aria-label="Play"></button><div class="msg">Paused</div>');
+        }
         else if (ev.data === S.ENDED) { plState.ended = true; plState.keep = false; finish(); }
       }
     }
@@ -1062,18 +1097,18 @@ function finish(){
   endCover();
 }
 function playerTick(){
-  if (!pl || !pl.getDuration || !plState) return;
+  if (!pl || !pl.getDuration || !plState || !plState.playing) return;   // nothing counts while an ad plays
   const d = pl.getDuration() || 0, t = pl.getCurrentTime() || 0;
   if (!d) return;
   if (!$('#pSeek').matches(':active')) $('#pSeek').value = Math.round(t / d * 1000);
   $('#pTime').textContent = (fmtDur(Math.floor(t)) || '0:00') + ' / ' + fmtDur(Math.floor(d));
   // 80% in counts as watched; the last 12s (where YouTube shows its end-screen video tiles) is covered up
-  if (!plState.marked && t / d >= .8) {
+  if (!plState.marked && d > 60 && t / d >= .8) {
     plState.marked = true;
     const undo = markHighlights(plState.id);
     if (undo) toast('Marked as watched', undo);
   }
-  if (!plState.ended && d > 60 && t >= d - 12) { plState.ended = true; pl.pauseVideo(); finish(); }
+  if (!plState.ended && d > 60 && t >= d - 12) { plState.ended = true; expectPause(); pl.pauseVideo(); finish(); }
 }
 const FS_IN = '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
 const FS_OUT = '<svg viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
@@ -1086,7 +1121,7 @@ function layoutPlayer(){
   P.classList.toggle('rot', plFull && portMQ.matches && !nativeFull());   // iPhone can't go truly full screen, so turn the player sideways
   $('#fsBtn').innerHTML = plFull ? FS_OUT : FS_IN;
   $('#fsBtn').hidden = landMQ.matches && !plFull;                          // already full screen when the phone is sideways
-  wake();
+  wake(); requestAnimationFrame(sizePlayer);
 }
 function wake(){
   const P = $('#player');
@@ -1707,7 +1742,7 @@ document.addEventListener('click', e => {
   else if (act === 'closePlayer') closePlayer();
   else if (act === 'pToggle' && pl && el.id === 'pcover' && wasIdle) {}
   else if (act === 'pFull') toggleFull();
-  else if (act === 'pToggle' && pl) { if (pl.getPlayerState() === window.YT.PlayerState.PLAYING) pl.pauseVideo(); else pl.playVideo(); }
+  else if (act === 'pToggle' && pl) { if (pl.getPlayerState() === window.YT.PlayerState.PLAYING) { expectPause(); pl.pauseVideo(); } else pl.playVideo(); }
   else if (act === 'pSeek' && pl) pl.seekTo(Math.max(0, pl.getCurrentTime() + Number(el.dataset.d)), true);
   else if (act === 'pKeep' && pl) { plState.keep = true; cover('clear'); pl.playVideo(); }
   else if (act === 'reveal') { revealed[id] = true; renderMatches(); }
