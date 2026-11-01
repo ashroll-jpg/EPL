@@ -1,8 +1,10 @@
 {
-  "version": "3.3",
+  "version": "3.4",
   "notes": [
-    "New sun / moon button at the top — tap to switch between light and dark mode",
-    "New Skipped button on each match: keeps the score showing for matches you didn't watch, and takes them off your Unseen list",
-    "Progress bar now counts watched and skipped matches as done"
+    "🔥 Watch ratings — each finished match gets 1–5 flames for how exciting it was (goals, comebacks, late drama), without giving away the score",
+    "🔮 Predict the score before you watch — 3 points for the exact score, 1 for the right result, with your record on the Me tab",
+    "Videos now play inside Reel FC — no YouTube titles, suggestions or end screens to spoil other results",
+    "Matches tick off automatically once you've watched 80% of the highlights",
+    "Ratings and the in-app player can be switched off in Settings"
   ]
 }
