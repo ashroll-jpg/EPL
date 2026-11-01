@@ -114,14 +114,17 @@ main{padding:0 16px calc(env(safe-area-inset-bottom) + 120px);max-width:640px;ma
 .watch.short .pi::after{border-left-color:#fff}
 .watch.short .wt small{color:var(--violet);opacity:1}
 
-.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.act{display:flex;align-items:center;justify-content:center;gap:8px;height:42px;border-radius:14px;background:rgba(255,255,255,.8);border:1px solid var(--line2);font:600 13.5px var(--fb);color:var(--muted);transition:all .15s}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.act{display:flex;align-items:center;justify-content:center;gap:6px;height:42px;padding:0 4px;border-radius:14px;background:rgba(255,255,255,.8);border:1px solid var(--line2);font:600 13px var(--fb);white-space:nowrap;color:var(--muted);transition:all .15s}
 .act .ck{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;flex:none}
 .act.on .ck{border:0;background:currentColor}
 .act.on .ck::after{content:"";width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
 .act.on[data-kind=h]{background:#e3f8ee;border-color:rgba(15,184,119,.45);color:#0a9a62}
 .act.on[data-kind=f]{background:#eeeafe;border-color:rgba(115,86,240,.45);color:var(--violet)}
 .act:disabled{opacity:.4}
+.act.on[data-kind=r]{background:#fff4dc;border-color:rgba(214,145,0,.45);color:#a86f00}
+#themeBtn .sun,.dark #themeBtn .moon{display:none}
+.dark #themeBtn .sun{display:block}
 
 .empty-state{text-align:center;color:var(--muted);padding:56px 16px;font:500 15px var(--fh)}
 .status{text-align:center;font:500 12px var(--fb);color:var(--dim);margin:20px 0 0}
@@ -262,6 +265,7 @@ details.lp[open] summary::after{content:" ▴"}
 .dark .act.on[data-kind=h]{border-color:rgba(63,227,154,.45)}
 .dark .pill.short,.dark .tag.f,.dark .act.on[data-kind=f],.dark .tb.on[data-t=me]{background:var(--violetbg);color:var(--violet)}
 .dark .act.on[data-kind=f]{border-color:rgba(166,144,255,.5)}
+.dark .act.on[data-kind=r]{background:var(--amberbg);color:var(--amber);border-color:rgba(255,194,79,.45)}
 .dark .pill.wait{background:var(--amberbg);color:var(--amber)}
 .dark .tb.on[data-t=table]{background:var(--skybg);color:var(--sky)}
 .dark .act{background:rgba(255,255,255,.04)}
@@ -358,6 +362,7 @@ details.adv .inner{padding:0 16px 16px}
 </defs><rect width="512" height="512" rx="114" fill="#fff"/><clipPath id="c1"><circle cx="256" cy="256" r="178"/></clipPath>
 <g filter="url(#sh)"><g clip-path="url(#c1)"><rect width="512" height="512" fill="url(#mow)"/><rect width="512" height="512" filter="url(#blades)" opacity=".85"/><rect width="512" height="512" fill="url(#shine)"/></g></g><path d="M214 186 Q206 181 206 191 V321 Q206 331 214 326 L330 262 Q338 256 330 250 Z" fill="#fff" filter="url(#paint)"/></svg>
   <div class="brand"><small>Reel FC</small><b id="title">Matches</b></div>
+  <button class="circ" id="themeBtn" aria-label="Switch light / dark"><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
   <button class="circ" id="refreshBtn" aria-label="Refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
 </header>
 <div class="ptr" id="ptr"><span id="ptrText">Pull to refresh</span></div>
@@ -461,7 +466,7 @@ const ESPN_STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/';
 const YT = 'https://www.googleapis.com/youtube/v3';
 const BUILT_IN_KEY = window.PLH_YOUTUBE_KEY || '';   // set in config.js (never replaced by updates)
 // App version — must match version.json in the repo. Bumped with every release.
-const APP_VERSION = '3.2';
+const APP_VERSION = '3.3';
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -513,7 +518,7 @@ let revealed = {}, tableRevealed = false, tableErr = '';
 let weekOffset = 0, games = [], filter = 'all', loading = false;
 let lastYT = {}, lastRefresh = 0, timer = null;
 
-const seen = id => !!(watched[id] && (watched[id].h || watched[id].f));
+const seen = id => !!(watched[id] && (watched[id].h || watched[id].f || watched[id].r));   // r = skipped: not watched, but score stays shown
 const isFav = g => favs.includes(g.home.name) || favs.includes(g.away.name);
 
 /* ---------- Match windows: Fri–Mon (weekend) and Tue–Thu (midweek) ---------- */
@@ -867,7 +872,7 @@ function renderMatches(){
   const rows = games.map(g => ({ g, v: findVideos(g) }));
   const n = games.filter(g => seen(g.id)).length;
   const isReady = ({ g, v }) => (v.ext || v.short) && !seen(g.id);
-  $('#progText').innerHTML = games.length ? `<b>${n}</b>of ${games.length} seen` : 'No matches';
+  $('#progText').innerHTML = games.length ? `<b>${n}</b>of ${games.length} done` : 'No matches';
   $('#progPct').textContent = games.length ? Math.round(n / games.length * 100) + '%' : '';
   $('#progBar').style.width = games.length ? (n / games.length * 100) + '%' : '0';
   $('#nAll').textContent = games.length;
@@ -898,7 +903,7 @@ function renderMatches(){
 
 function card({ g, v }){
   const e = watched[g.id] || {};
-  const s = !!(e.h || e.f);
+  const s = !!(e.h || e.f || e.r);
   const started = g.state !== 'pre';
   const showScore = started && (!settings.hideScores || s || revealed[g.id]);
   const hidden = started && !showScore;
@@ -960,6 +965,7 @@ function card({ g, v }){
     <div class="acts">
       <button class="act ${e.h ? 'on' : ''}" data-act="mark" data-kind="h" data-id="${esc(g.id)}" ${dis}><span class="ck"></span>Highlights</button>
       <button class="act ${e.f ? 'on' : ''}" data-act="mark" data-kind="f" data-id="${esc(g.id)}" ${dis}><span class="ck"></span>Live / Full</button>
+      <button class="act ${e.r ? 'on' : ''}" data-act="mark" data-kind="r" data-id="${esc(g.id)}" ${dis}><span class="ck"></span>Skipped</button>
     </div>
   </article>`;
 }
@@ -1360,6 +1366,12 @@ function setTab(t){ tab = t; LS.set('plh.tab', t); renderAll(); window.scrollTo(
 const cleanHandle = (v, d) => { v = (v || '').trim() || d; return v.startsWith('@') ? v : '@' + v; };
 
 $('#refreshBtn').addEventListener('click', () => refresh(true));
+$('#themeBtn').addEventListener('click', () => {
+  settings.appearance = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+  settings.u = Date.now(); LS.set('plh.settings', settings);
+  $('#appearance').value = settings.appearance;
+  applyTheme(); toast(settings.appearance === 'dark' ? 'Dark mode' : 'Light mode');
+});
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
   const act = el.dataset.act, id = el.dataset.id;

@@ -21,5 +21,6 @@ Premier League and Champions League scores + extended highlights (NBC Sports for
 ## How it works
 - Scores, tables and the UCL knockout bracket: ESPN's public Premier League and Champions League feeds.
 - Videos: NBC Sports (PL) and CBS Sports Golazo (UCL) YouTube uploads, matched to fixtures by team names; 6+ minutes counts as extended.
+- Each match can be marked Highlights, Live / Full, or Skipped (score stays visible, not counted in watch stats).
 - Matches are grouped into Weekend (Fri–Mon) and Midweek (Tue–Thu) blocks.
 - Updates: the app checks `version.json` and shows a pop-up when a newer version is live.
