@@ -1,12 +1,8 @@
 {
-  "version": "3.2",
+  "version": "3.3",
   "notes": [
-    "Dark mode — follows your iPhone, or pick Light/Dark in Settings",
-    "Tapping Watch now ticks the match off automatically (with Undo)",
-    "Swipe left/right between Weekend and Midweek, pull down to refresh",
-    "Empty weeks (international breaks) offer a jump to the next matches",
-    "Simpler Settings: changes save automatically, technical options moved to Advanced",
-    "Share Reel FC button on the Me tab",
-    "Under-the-hood cleanup of old saved data"
+    "New sun / moon button at the top — tap to switch between light and dark mode",
+    "New Skipped button on each match: keeps the score showing for matches you didn't watch, and takes them off your Unseen list",
+    "Progress bar now counts watched and skipped matches as done"
   ]
 }
