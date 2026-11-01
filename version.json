@@ -1,10 +1,8 @@
 {
-  "version": "3.4",
+  "version": "3.5",
   "notes": [
-    "🔥 Watch ratings — each finished match gets 1–5 flames for how exciting it was (goals, comebacks, late drama), without giving away the score",
-    "🔮 Predict the score before you watch — 3 points for the exact score, 1 for the right result, with your record on the Me tab",
-    "Videos now play inside Reel FC — no YouTube titles, suggestions or end screens to spoil other results",
-    "Matches tick off automatically once you've watched 80% of the highlights",
-    "Ratings and the in-app player can be switched off in Settings"
+    "Full-screen videos: turn your phone sideways and the highlights fill the screen, with controls that fade away while playing",
+    "Full-screen button next to the seek bar — with the phone upright, it turns the player sideways for you",
+    "Tap the picture to bring the controls back"
   ]
 }
