@@ -288,8 +288,63 @@ details.lp[open] summary::after{content:" ▴"}
 .dark .field input:focus,.dark .field select:focus{background:var(--bg)}
 .dark .mark{box-shadow:0 0 0 1px rgba(255,255,255,.08)}
 
+/* Watch rating + prediction row on each card */
+.meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;min-height:28px}
+.rate{display:inline-flex;align-items:center;gap:6px;font:600 12.5px var(--fb);color:var(--muted);white-space:nowrap}
+.rate .fl{letter-spacing:-2px;font-size:13px}
+.rate .fl i{font-style:normal}
+.rate .fl i.off{filter:grayscale(1);opacity:.25}
+.rate.r4,.rate.r5{color:#c2410c}
+.pbtn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;font:600 12.5px var(--fb);background:var(--skybg);color:var(--sky);white-space:nowrap;margin-left:auto}
+.pbtn.set{background:var(--s2);color:var(--text);border:1px dashed var(--line2)}
+.pres{margin-left:auto;font:600 12.5px var(--fb);white-space:nowrap;color:var(--muted)}
+.pres.exact{color:var(--mint)}.pres.result{color:var(--sky)}
+.dark .rate.r4,.dark .rate.r5{color:#ff9a62}
+/* Predict sheet */
+.pred{margin-top:16px;border-top:1px solid var(--line)}
+.pred .pr{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.pred .pr img,.pred .pr .nologo{width:28px;height:28px;object-fit:contain}
+.pred .pr b{flex:1;min-width:0;font:600 16px var(--fb);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pred .st{display:flex;align-items:center;gap:6px}
+.pred .st button{width:38px;height:38px;border-radius:12px;background:var(--s2);border:1px solid var(--line2);font:700 20px var(--fh)}
+.pred .st span{min-width:30px;text-align:center;font:700 26px var(--fh)}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pstats .tile{padding:14px}
+.pstats .tile .n{font-size:28px}
+/* In-app player — always dark, like a cinema */
+.player{position:fixed;inset:0;z-index:27;background:#070a09;color:#eef3f0;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top) + 8px) 0 calc(env(safe-area-inset-bottom) + 12px);animation:fade .2s}
+.player .pbar{display:flex;align-items:center;gap:12px;padding:4px 16px 12px}
+.player .pbar .pt{flex:1;min-width:0}
+.player .pbar b{display:block;font:700 18px var(--fh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .pbar small{display:block;font:500 12.5px var(--fb);color:#9aa5a0}
+.player .circ{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.1);box-shadow:none}
+.player .circ svg{stroke:#fff}
+.pframe{position:relative;width:min(100%,calc((100vh - 230px) * 16 / 9));aspect-ratio:16/9;margin:auto auto 0;background:#000;overflow:hidden}
+.pframe iframe,#ytp{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pcover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16px;
+  background:radial-gradient(80% 90% at 50% 40%,#173326,#070a09);transition:opacity .2s}
+.pcover.pass{pointer-events:none}
+.pcover.clear{opacity:0}
+.pcover .big{width:64px;height:64px;border-radius:50%;background:linear-gradient(110deg,#12c27e,#1a93e8);position:relative;box-shadow:0 8px 24px rgba(18,194,126,.35)}
+.pcover .big::after{content:"";position:absolute;left:26px;top:20px;border-left:18px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
+.pcover .big.pause::after{left:22px;top:21px;width:6px;height:22px;border:0;background:#fff;box-shadow:13px 0 0 #fff}
+.pcover .msg{font:600 14px var(--fb);color:#cfd8d3}
+.pcover h4{margin:0;font:700 22px var(--fh)}
+.pcover .pr2{display:flex;gap:10px;margin-top:6px}
+.pcover .pr2 button{padding:10px 16px;border-radius:12px;font:700 14px var(--fh);background:rgba(255,255,255,.1)}
+.pcover .pr2 .btn{padding:10px 18px;font-size:14px;background:linear-gradient(110deg,#12c27e,#1a93e8)}
+.pctl{display:flex;align-items:center;gap:10px;padding:14px 16px 0;width:min(100%,560px);margin:0 auto}
+.pctl button{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);font:700 12px var(--fb);flex:none}
+.pctl .pp{width:48px;height:48px;background:#eef3f0;color:#070a09;font-size:16px}
+.pctl input{flex:1;min-width:0;accent-color:#12c27e}
+.pctl .tm{font:600 12px var(--fb);color:#9aa5a0;min-width:74px;text-align:right;font-variant-numeric:tabular-nums}
+.pfoot{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px 16px 0;margin-bottom:auto}
+.pfoot button,.pfoot a{padding:9px 14px;border-radius:99px;font:600 13px var(--fb);background:rgba(255,255,255,.08);color:#cfd8d3}
+.pfoot .pbtn{margin:0;background:rgba(26,147,232,.2);color:#7cc4ff}
+
 /* Toast */
-.toast{position:fixed;z-index:25;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,20px);opacity:0;pointer-events:none;
+.toast{position:fixed;z-index:29;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,20px);opacity:0;pointer-events:none;
   display:flex;align-items:center;gap:14px;padding:11px 12px 11px 18px;border-radius:99px;background:#14201b;color:#fff;font:600 14px var(--fb);
   box-shadow:0 10px 30px rgba(0,0,0,.3);transition:all .25s;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
@@ -400,6 +455,8 @@ details.adv .inner{padding:0 16px 16px}
     <div class="lbl" id="settings">Settings</div>
     <div class="panel">
       <label class="toggle">Spoiler shield — hide scores, tables and bracket until watched<input type="checkbox" id="hideScores"></label>
+      <label class="toggle">Watch ratings — 🔥 how exciting a match was, without the score<input type="checkbox" id="ratings"></label>
+      <label class="toggle">Play videos inside Reel FC — hides YouTube's titles and suggestions<input type="checkbox" id="inApp"></label>
       <div class="field">
         <label for="appearance">Appearance</label>
         <select id="appearance"><option value="auto">Match iPhone (light / dark)</option><option value="light">Light</option><option value="dark">Dark</option></select>
@@ -450,6 +507,14 @@ details.adv .inner{padding:0 16px 16px}
     <button data-act="share" class="share">Share Reel FC</button> <button data-act="checkUpdate">Check for updates</button><small id="verMsg"></small></div>
 </main>
 
+<div class="player" id="player" hidden>
+  <div class="pbar"><div class="pt"><b id="plTitle"></b><small id="plSub"></small></div>
+    <button class="circ" data-act="closePlayer" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pframe"><div id="ytp"></div><div class="pcover pass" id="pcover"></div></div>
+  <div class="pctl" id="pctl" hidden><button data-act="pSeek" data-d="-10">−10</button><button class="pp" data-act="pToggle" id="ppBtn">❚❚</button><button data-act="pSeek" data-d="10">+10</button>
+    <input type="range" id="pSeek" min="0" max="1000" value="0" aria-label="Seek"><span class="tm" id="pTime"></span></div>
+  <div class="pfoot" id="plFoot"></div>
+</div>
 <div class="modal" id="modal" hidden></div>
 <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastBtn" hidden>Undo</button></div>
 
@@ -463,10 +528,10 @@ details.adv .inner{padding:0 16px 16px}
 <script>
 const ESPN_SITE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/';
 const ESPN_STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/';
-const YT = 'https://www.googleapis.com/youtube/v3';
+const YT_API = 'https://www.googleapis.com/youtube/v3';
 const BUILT_IN_KEY = window.PLH_YOUTUBE_KEY || '';   // set in config.js (never replaced by updates)
 // App version — must match version.json in the repo. Bumped with every release.
-const APP_VERSION = '3.3';
+const APP_VERSION = '3.4';
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -485,7 +550,7 @@ const COMPS = {
 const COMP_KEYS = ['pl', 'ucl'];
 
 const apiKey = () => settings.apiKey || BUILT_IN_KEY;
-const settings = Object.assign({ apiKey:'', handles:{}, hideScores:true, refreshMin:5 }, LS.get('plh.settings', {}));
+const settings = Object.assign({ apiKey:'', handles:{}, hideScores:true, refreshMin:5, ratings:true, inApp:true }, LS.get('plh.settings', {}));
 if (settings.handle) { settings.handles = { ...settings.handles, pl: settings.handle }; delete settings.handle; LS.set('plh.settings', settings); }   // migrate v2
 settings.handles = settings.handles || {};
 const handleFor = c => settings.handles[c] || COMPS[c].handle;
@@ -711,7 +776,7 @@ function buildBracket(){
 
 /* ---------- YouTube (uploads playlists — 1 quota unit per 50 videos) ---------- */
 async function yt(path, params){
-  const u = new URL(YT + path);
+  const u = new URL(YT_API + path);
   Object.entries({ ...params, key: apiKey() }).forEach(([k, v]) => u.searchParams.set(k, v));
   const r = await fetch(u);
   const j = await r.json().catch(() => ({}));
@@ -836,6 +901,172 @@ function findVideos(g){
   return { ext, short };
 }
 
+/* ---------- Watch rating: how exciting a match was, without giving the score away ---------- */
+const RATE_WORDS = ['', 'Skippable', 'Decent', 'Good watch', 'Great game', 'Must watch'];
+const minOf = m => { const x = /(\d+)/.exec(m || ''); return x ? +x[1] : 0; };
+function rating(g){
+  if (!g.completed) return 0;
+  const hs = Number(g.home.score) || 0, as = Number(g.away.score) || 0, goals = hs + as, margin = Math.abs(hs - as);
+  let pts = Math.min(goals, 5) + (margin <= 1 ? 2 : margin === 2 ? 1 : 0);
+  const gl = (g.events || []).filter(e => !e.red);
+  // only read the goal order when ESPN's goal list adds up to the final score
+  if (goals && gl.filter(e => e.team === g.home.id).length === hs && gl.filter(e => e.team === g.away.id).length === as) {
+    let h = 0, a = 0, lo = 0, hi = 0, swings = 0, lateBig = false, late = false;
+    for (const e of gl) {
+      const before = Math.sign(h - a);
+      if (e.team === g.home.id) h++; else a++;
+      const after = Math.sign(h - a);
+      lo = Math.min(lo, h - a); hi = Math.max(hi, h - a);
+      if (before !== 0 && after !== before) swings++;                       // equaliser or turnaround
+      if (minOf(e.min) >= 80) { late = true; if (after !== before) lateBig = true; }
+    }
+    pts += Math.min(swings, 3);
+    if ((hs > as && lo < 0) || (as > hs && hi > 0)) pts += 2;               // comeback win
+    pts += lateBig ? 2 : late ? 1 : 0;
+  }
+  if ((g.events || []).some(e => e.red)) pts += 1;
+  if (/pen/i.test(g.detail)) pts += 2; else if (/aet|extra/i.test(g.detail)) pts += 1;
+  return pts <= 2 ? 1 : pts <= 4 ? 2 : pts <= 6 ? 3 : pts <= 8 ? 4 : 5;
+}
+const rateHTML = n => `<span class="rate r${n}" title="Watch rating — based on goals, drama and late twists, not who won">
+  <span class="fl">${[1,2,3,4,5].map(i => `<i class="${i > n ? 'off' : ''}">🔥</i>`).join('')}</span>${RATE_WORDS[n]}</span>`;
+
+/* ---------- Predictions: call the score before you watch ---------- */
+function predResult(p, hs, as){
+  hs = Number(hs); as = Number(as);
+  if (p[0] === hs && p[1] === as) return { pts: 3, cls: 'exact', label: 'You called it', icon: '🎯' };
+  if (Math.sign(p[0] - p[1]) === Math.sign(hs - as)) return { pts: 1, cls: 'result', label: 'Right result', icon: '✓' };
+  return { pts: 0, cls: 'miss', label: 'You said ' + p.join('–'), icon: '✗' };
+}
+let predDraft = null;
+function openPredict(id){
+  const g = games.find(x => x.id === id); if (!g) return;
+  const e = watched[id] || {};
+  predDraft = { id, h: e.p ? e.p[0] : 1, a: e.p ? e.p[1] : 1 };
+  const row = (t, side) => `<div class="pr">${t.logo ? `<img src="${esc(t.logo)}" alt="">` : '<span class="nologo"></span>'}<b>${esc(t.short)}</b>
+    <span class="st"><button data-act="predStep" data-side="${side}" data-d="-1" aria-label="Less">−</button><span id="pd-${side}">${predDraft[side]}</span>
+    <button data-act="predStep" data-side="${side}" data-d="1" aria-label="More">+</button></span></div>`;
+  showModal(`<span class="badge">🔮 Predict</span><h3>What's your call?</h3>
+    <p>Lock in a score before you watch. You'll find out how you did once it's marked watched — 3 points for the exact score, 1 for the right result.</p>
+    <div class="pred">${row(g.home, 'h')}${row(g.away, 'a')}</div>
+    <div class="row2"><button class="ghost" data-act="${e.p ? 'predClear' : 'closeModal'}" data-id="${esc(id)}">${e.p ? 'Clear' : 'Cancel'}</button>
+      <button class="btn" data-act="predSave" data-id="${esc(id)}">Lock it in</button></div>`);
+}
+function setPrediction(id, p){
+  const g = games.find(x => x.id === id); if (!g) return;
+  const e = watched[id] || {};
+  if (p) e.p = p; else delete e.p;
+  delete e.ps;
+  Object.assign(e, { home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp, u: Date.now() });
+  watched[id] = e;
+  LS.set('plh.watched', watched); queueSync(); renderMatches(); if (!$('#player').hidden) playerFoot();
+}
+
+/* ---------- In-app player: YouTube without its spoiler-y titles, suggestions and end screens ---------- */
+let ytReady = null, pl = null, plState = null, plTick = null;
+function loadYT(){
+  if (ytReady) return ytReady;
+  return ytReady = new Promise((res, rej) => {
+    if (window.YT && window.YT.Player) return res();
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); res(); };
+    const sc = document.createElement('script');
+    sc.src = 'https://www.youtube.com/iframe_api';
+    sc.onerror = () => { ytReady = null; rej(new Error('YouTube player could not load')); };
+    document.head.appendChild(sc);
+    setTimeout(() => { if (!(window.YT && window.YT.Player)) { ytReady = null; rej(new Error('YouTube player timed out')); } }, 12000);
+  });
+}
+function cover(mode, html){
+  const c = $('#pcover');
+  c.className = 'pcover' + (mode === 'pass' ? ' pass' : '') + (mode === 'clear' ? ' clear' : '');
+  if (html != null) c.innerHTML = html;
+  if (mode === 'clear') c.dataset.act = 'pToggle'; else delete c.dataset.act;   // while playing, tapping the picture pauses
+}
+const plMatch = () => plState && games.find(x => x.id === plState.id);
+function playerFoot(){
+  const g = plMatch(); if (!g) return;
+  const e = watched[g.id] || {};
+  const canPredict = !e.p && !seen(g.id) && settings.hideScores;
+  $('#plFoot').innerHTML = (canPredict ? `<button class="pbtn" data-act="predict" data-id="${esc(g.id)}">🔮 Predict the score first</button>` : '')
+    + (e.p && !seen(g.id) ? `<span class="pres" style="color:#9aa5a0">Your call ${esc(e.p.join('–'))}</span>` : '')
+    + `<button data-act="ytOut" data-id="${esc(g.id)}">Open in YouTube</button>`;
+}
+function markHighlights(id){
+  const g = games.find(x => x.id === id); if (!g) return null;
+  const prev = watched[id] ? { ...watched[id] } : null;
+  if (prev && prev.h) return null;
+  watched[id] = { ...(prev || {}), h: Date.now(), home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp, u: Date.now() };
+  LS.set('plh.watched', watched); queueSync();
+  return () => {
+    watched[id] = { ...(prev || { home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp }), h: prev ? prev.h || 0 : 0, u: Date.now() };
+    LS.set('plh.watched', watched); queueSync(); renderMatches();
+  };
+}
+function endCover(){
+  const g = plMatch(); if (!g) return;
+  const e = watched[g.id] || {};
+  const r = e.p && g.completed ? predResult(e.p, g.home.score, g.away.score) : null;
+  cover('block', `<h4>Full time ✓</h4>
+    <div class="msg">${r ? `${r.icon} ${esc(r.label)} — you said ${esc(e.p.join('–'))}${r.pts ? ` · +${r.pts}` : ''}` : 'Marked as watched'}</div>
+    <div class="pr2"><button data-act="pKeep">Keep watching</button><button class="btn" data-act="closePlayer">Done</button></div>`);
+}
+async function openPlayer(id, vid){
+  const g = games.find(x => x.id === id); if (!g) return;
+  plState = { id, vid, marked: !!(watched[id] && watched[id].h), ended: false, keep: false };
+  $('#plTitle').textContent = `${g.home.short} v ${g.away.short}`;
+  $('#plSub').textContent = `${COMPS[g.comp].name} · ${COMPS[g.comp].source}`;
+  $('#player').hidden = false; document.body.style.overflow = 'hidden';
+  $('#pctl').hidden = true;
+  cover('pass', '<div class="big"></div><div class="msg">Loading…</div>');
+  playerFoot();
+  try { await loadYT(); } catch (err) { cover('block', `<div class="msg">${esc(err.message)}.</div><div class="pr2"><button class="btn" data-act="ytOut" data-id="${esc(id)}">Open in YouTube</button></div>`); return; }
+  if (!plState || plState.vid !== vid) return;
+  $('#ytp').replaceWith(Object.assign(document.createElement('div'), { id: 'ytp' }));
+  pl = new window.YT.Player('ytp', {
+    host: 'https://www.youtube-nocookie.com', videoId: vid,
+    playerVars: { controls: 0, rel: 0, playsinline: 1, iv_load_policy: 3, disablekb: 1, fs: 0, modestbranding: 1,
+                  ...(location.protocol.startsWith('http') ? { origin: location.origin } : {}) },
+    events: {
+      onReady: () => { cover('pass', '<div class="big"></div><div class="msg">Tap to play</div>'); pl.playVideo(); },
+      onError: () => cover('block', `<div class="msg">This video can only be played on YouTube.</div><div class="pr2"><button class="btn" data-act="ytOut" data-id="${esc(id)}">Open in YouTube</button></div>`),
+      onStateChange: ev => {
+        const S = window.YT.PlayerState;
+        if (ev.data === S.PLAYING) { if (!plState.ended || plState.keep) cover('clear'); $('#pctl').hidden = false; $('#ppBtn').textContent = '❚❚'; }
+        else if (ev.data === S.PAUSED) { $('#ppBtn').textContent = '▶'; if (!plState.ended || plState.keep) cover('block', '<button class="big" data-act="pToggle" aria-label="Play"></button><div class="msg">Paused</div>'); }
+        else if (ev.data === S.ENDED) { plState.ended = true; plState.keep = false; finish(); }
+      }
+    }
+  });
+  clearInterval(plTick); plTick = setInterval(playerTick, 500);
+}
+function finish(){
+  if (!plState) return;
+  if (!plState.marked) { plState.marked = true; markHighlights(plState.id); renderMatches(); }
+  endCover();
+}
+function playerTick(){
+  if (!pl || !pl.getDuration || !plState) return;
+  const d = pl.getDuration() || 0, t = pl.getCurrentTime() || 0;
+  if (!d) return;
+  if (!$('#pSeek').matches(':active')) $('#pSeek').value = Math.round(t / d * 1000);
+  $('#pTime').textContent = (fmtDur(Math.floor(t)) || '0:00') + ' / ' + fmtDur(Math.floor(d));
+  // 80% in counts as watched; the last 12s (where YouTube shows its end-screen video tiles) is covered up
+  if (!plState.marked && t / d >= .8) {
+    plState.marked = true;
+    const undo = markHighlights(plState.id);
+    if (undo) toast('Marked as watched', undo);
+  }
+  if (!plState.ended && d > 60 && t >= d - 12) { plState.ended = true; pl.pauseVideo(); finish(); }
+}
+function closePlayer(){
+  clearInterval(plTick); plTick = null;
+  try { if (pl) pl.destroy(); } catch (e) {}
+  pl = null; plState = null;
+  $('#player').hidden = true; document.body.style.overflow = '';
+  renderMatches();
+}
+
 /* ---------- Teams helpers ---------- */
 function teamGroups(){
   const seenN = new Set(), groups = { pl: [], ucl: [] };
@@ -930,9 +1161,9 @@ function card({ g, v }){
   const src = COMPS[g.comp].source;
   const ytl = id => `https://www.youtube.com/watch?v=${esc(id)}`;
   let watch = '';
-  if (v.ext) watch = `<a class="watch" href="${ytl(v.ext.id)}" target="_blank" rel="noopener" data-act="watchLink" data-id="${esc(g.id)}">
+  if (v.ext) watch = `<a class="watch" href="${ytl(v.ext.id)}" target="_blank" rel="noopener" data-act="watchLink" data-id="${esc(g.id)}" data-vid="${esc(v.ext.id)}">
       <span class="pi"></span><span class="wt"><b>Watch extended highlights</b><small>${v.ext.dur > 0 ? fmtDur(v.ext.dur) + ' · ' : ''}${esc(src)} · YouTube</small></span><span class="go">›</span></a>`;
-  else if (v.short) watch = `<a class="watch short" href="${ytl(v.short.id)}" target="_blank" rel="noopener" data-act="watchLink" data-id="${esc(g.id)}">
+  else if (v.short) watch = `<a class="watch short" href="${ytl(v.short.id)}" target="_blank" rel="noopener" data-act="watchLink" data-id="${esc(g.id)}" data-vid="${esc(v.short.id)}">
       <span class="pi"></span><span class="wt"><b>Watch highlights</b><small>${v.short.dur > 0 ? fmtDur(v.short.dur) + ' · short version — extended not up yet' : esc(src) + ' · YouTube'}</small></span><span class="go">›</span></a>`;
 
   const rgb = c => c.join(',');
@@ -956,10 +1187,25 @@ function card({ g, v }){
     if (hS || aS) evs = `<div class="evs"><div>${hS}</div><div class="r">${aS}</div></div>`;
   }
 
+  // rating (finished matches) on the left, prediction on the right
+  const rate = settings.ratings !== false ? rating(g) : 0;
+  let pred = '';
+  if (!showScore && !s && (settings.hideScores || !started)) pred = e.p
+    ? `<button class="pbtn set" data-act="predict" data-id="${esc(g.id)}">🔮 Your call ${esc(e.p.join('–'))}</button>`
+    : `<button class="pbtn" data-act="predict" data-id="${esc(g.id)}">🔮 Predict</button>`;
+  else if (e.p && showScore && g.completed) {
+    const r = predResult(e.p, g.home.score, g.away.score);
+    pred = `<span class="pres ${r.cls}">${r.icon} ${esc(r.label)}${r.pts ? ' · +' + r.pts : ''}</span>`;
+    if (!e.ps || e.ps[0] !== hs || e.ps[1] !== as) { e.ps = [hs, as]; LS.set('plh.watched', watched); }   // remembered for the Me tab
+  }
+  else if (e.p) pred = `<span class="pres">Your call ${esc(e.p.join('–'))}</span>`;
+  const meta = rate || pred ? `<div class="meta">${rate ? rateHTML(rate) : ''}${pred}</div>` : '';
+
   return `<article class="card ${s ? 'seen' : ''} ${fav ? 'fav' : ''}" style="${style}">
     <div class="top"><span class="tl">${compBadge(g.comp, g.round)}${state}</span>${vbadge}</div>
     <div class="teams" ${hidden ? `data-act="reveal" data-id="${esc(g.id)}"` : ''}>${team(g.home, 'h')}${team(g.away, 'a')}
       ${hidden ? '<div class="reveal-hint">Tap to reveal score</div>' : ''}</div>
+    ${meta}
     ${evs}
     ${watch}
     <div class="acts">
@@ -1070,7 +1316,15 @@ function renderMe(){
       <span class="m">${esc(teamInfo(e.home).short)} v ${esc(teamInfo(e.away).short)}</span>
       <span class="d">${e.date ? new Date(e.date).toLocaleDateString([], { month:'short', day:'numeric' }) : ''}</span></div>`).join('') + `</div>`;
   }
-  if (!seenAll.length) html += `<p class="note" style="margin:14px 4px 0">Mark matches as Highlights or Live / Full and your stats build up here.</p>`;
+  const preds = list.filter(e => e.p && e.ps).map(e => predResult(e.p, e.ps[0], e.ps[1]));
+  if (preds.length) {
+    const ptsSum = preds.reduce((n, r) => n + r.pts, 0), ex = preds.filter(r => r.pts === 3).length, rr = preds.filter(r => r.pts >= 1).length;
+    html += `<div class="lbl">🔮 Predictions</div><div class="pstats">
+      <div class="tile c-sky"><div class="n">${ptsSum}</div><div class="k">Points</div></div>
+      <div class="tile c-mint"><div class="n">${ex}</div><div class="k">Exact scores</div></div>
+      <div class="tile c-violet"><div class="n">${Math.round(rr / preds.length * 100)}%</div><div class="k">Right result (${rr}/${preds.length})</div></div></div>`;
+  }
+  if (!seenAll.length) html += `<p class="note\" style="margin:14px 4px 0">Mark matches as Highlights or Live / Full and your stats build up here.</p>`;
   $('#meStats').innerHTML = html;
 
   const groups = teamGroups();
@@ -1110,7 +1364,7 @@ async function gh(path, opts = {}){
 function snapshot(){
   return { v:1, watched, favs:{ list:favs, u:favsU },
     // API key deliberately NOT synced — secret gists are readable by anyone with the link
-    prefs:{ handles:settings.handles, hideScores:settings.hideScores, refreshMin:settings.refreshMin, u:settings.u || 0 } };
+    prefs:{ handles:settings.handles, hideScores:settings.hideScores, ratings:settings.ratings, inApp:settings.inApp, refreshMin:settings.refreshMin, u:settings.u || 0 } };
 }
 function mergeIn(remote){
   let changed = false;
@@ -1120,7 +1374,7 @@ function mergeIn(remote){
   if (remote.favs && (remote.favs.u || 0) > favsU) { favs = remote.favs.list || []; favsU = remote.favs.u; changed = true; }
   const p = remote.prefs;
   if (p && (p.u || 0) > (settings.u || 0)) {
-    ['handles','hideScores','refreshMin','u'].forEach(k => { if (k in p) settings[k] = p[k]; });
+    ['handles','hideScores','ratings','inApp','refreshMin','u'].forEach(k => { if (k in p) settings[k] = p[k]; });
     if (p.handle && !p.handles) settings.handles = { ...settings.handles, pl: p.handle };
     settings.handles = settings.handles || {};
     changed = true;
@@ -1215,7 +1469,8 @@ function showWelcome(){
     <h3>Reel FC ⚽</h3><p>Premier League and Champions League highlights, without the spoilers.</p>
     <ul class="welcome">
       <li><b>Spoiler shield</b> — scores, scorers and tables stay hidden until you watch or tap to reveal.</li>
-      <li><b>Watch extended highlights</b> opens YouTube and ticks the match off for you.</li>
+      <li><b>Watch extended highlights</b> right here — no YouTube titles or suggestions — and it ticks the match off for you.</li>
+      <li><b>🔥 Watch ratings</b> tell you how exciting a match was, and <b>🔮 Predict</b> lets you call the score first.</li>
       <li>Mark <b>Highlights</b> or <b>Live / Full</b> for anything else you've seen.</li>
       <li>Star your teams in the <b>Me</b> tab to pin their matches to the top.</li>
       <li>Swipe left / right between <b>Weekend</b> and <b>Midweek</b>; pull down to refresh.</li>
@@ -1294,6 +1549,8 @@ function saveSettings(){
   settings.apiKey = $('#apiKey').value.trim();
   settings.handles = { pl: cleanHandle($('#handlePL').value, COMPS.pl.handle), ucl: cleanHandle($('#handleUCL').value, COMPS.ucl.handle) };
   settings.hideScores = $('#hideScores').checked;
+  settings.ratings = $('#ratings').checked;
+  settings.inApp = $('#inApp').checked;
   settings.refreshMin = Number($('#refreshMin').value);
   settings.appearance = $('#appearance').value;
   settings.u = Date.now();
@@ -1301,7 +1558,7 @@ function saveSettings(){
   applyTheme(); queueSync(); toast('Settings saved');
   if (before !== apiKey() + handleFor('pl') + handleFor('ucl')) refresh(true); else { renderAll(); schedule(); }
 }
-['apiKey','handlePL','handleUCL','hideScores','refreshMin','appearance'].forEach(id => $('#' + id).addEventListener('change', saveSettings));
+['apiKey','handlePL','handleUCL','hideScores','ratings','inApp','refreshMin','appearance'].forEach(id => $('#' + id).addEventListener('change', saveSettings));
 
 /* ---------- Toast with optional Undo ---------- */
 let toastTimer = null, toastUndo = null;
@@ -1311,12 +1568,13 @@ function toast(msg, undo){
   $('#toast').classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('show'), undo ? 6000 : 2200);
 }
+$('#pSeek').addEventListener('input', e => { if (pl && pl.getDuration) pl.seekTo(pl.getDuration() * e.target.value / 1000, true); });
 $('#toastBtn').addEventListener('click', () => { if (toastUndo) toastUndo(); toastUndo = null; $('#toast').classList.remove('show'); });
 
 /* ---------- Gestures: swipe between blocks, pull down to refresh ---------- */
 let touch = null;
 document.addEventListener('touchstart', e => {
-  if (e.touches.length !== 1 || !$('#modal').hidden) { touch = null; return; }
+  if (e.touches.length !== 1 || !$('#modal').hidden || !$('#player').hidden) { touch = null; return; }
   const t = e.touches[0];
   touch = { x: t.clientX, y: t.clientY, top: window.scrollY <= 0,
             skip: !!e.target.closest('.bracket, .chips, input, select, textarea, details summary') };
@@ -1343,7 +1601,8 @@ document.addEventListener('touchend', e => {
 function fillSettings(){
   $('#apiKey').value = settings.apiKey; $('#appearance').value = settings.appearance || 'auto';
   $('#handlePL').value = handleFor('pl'); $('#handleUCL').value = handleFor('ucl');
-  $('#hideScores').checked = settings.hideScores; $('#refreshMin').value = String(settings.refreshMin);
+  $('#hideScores').checked = settings.hideScores; $('#ratings').checked = settings.ratings !== false; $('#inApp').checked = settings.inApp !== false;
+  $('#refreshMin').value = String(settings.refreshMin);
   $('#ghToken').value = sync.token || '';
   $('#syncOffBtn').hidden = !sync.token;
 }
@@ -1382,7 +1641,22 @@ document.addEventListener('click', e => {
     Object.assign(entry, { home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp, u: Date.now() });
     watched[id] = entry;
     LS.set('plh.watched', watched); renderMatches(); queueSync();
+    if (entry[k] && entry.p && g.completed) {
+      const r = predResult(entry.p, g.home.score, g.away.score);
+      toast(`${r.icon} ${r.label}${r.pts ? ' · +' + r.pts : ''}`);
+    }
   }
+  else if (act === 'predict') openPredict(id);
+  else if (act === 'predStep' && predDraft) {
+    const k = el.dataset.side; predDraft[k] = Math.max(0, Math.min(9, predDraft[k] + Number(el.dataset.d)));
+    $('#pd-' + k).textContent = predDraft[k];
+  }
+  else if (act === 'predSave' && predDraft) { setPrediction(predDraft.id, [predDraft.h, predDraft.a]); hideModal(); toast(`Locked in ${predDraft.h}–${predDraft.a} 🔮`); predDraft = null; }
+  else if (act === 'predClear') { setPrediction(id, null); hideModal(); predDraft = null; }
+  else if (act === 'closePlayer') closePlayer();
+  else if (act === 'pToggle' && pl) { if (pl.getPlayerState() === window.YT.PlayerState.PLAYING) pl.pauseVideo(); else pl.playVideo(); }
+  else if (act === 'pSeek' && pl) pl.seekTo(Math.max(0, pl.getCurrentTime() + Number(el.dataset.d)), true);
+  else if (act === 'pKeep' && pl) { plState.keep = true; cover('clear'); pl.playVideo(); }
   else if (act === 'reveal') { revealed[id] = true; renderMatches(); }
   else if (act === 'filter') { filter = el.dataset.f; renderMatches(); }
   else if (act === 'prev') goWeek(weekOffset - 1);
@@ -1397,17 +1671,15 @@ document.addEventListener('click', e => {
     LS.set('plh.favs', favs); LS.set('plh.favsU', favsU); renderMe(); queueSync();
   }
   else if (act === 'goSettings') { setTab('me'); fillSettings(); $('#advanced').open = true; setTimeout(() => $('#advanced').scrollIntoView({ behavior:'smooth' }), 50); }
-  else if (act === 'watchLink') {           // opening the video ticks Highlights (with Undo); the link still opens
-    const g = games.find(x => x.id === id); if (!g) return;
-    const prev = watched[id] ? { ...watched[id] } : null;
-    if (prev && prev.h) return;
-    watched[id] = { ...(prev || {}), h: Date.now(), home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp, u: Date.now() };
-    LS.set('plh.watched', watched); queueSync();
+  else if (act === 'watchLink' && settings.inApp !== false && el.dataset.vid) { e.preventDefault(); openPlayer(id, el.dataset.vid); }
+  else if (act === 'watchLink' || act === 'ytOut') {   // opening YouTube ticks Highlights (with Undo); the link still opens
+    if (act === 'ytOut') {
+      const vid = plState && plState.vid; closePlayer();
+      if (vid) window.open('https://www.youtube.com/watch?v=' + encodeURIComponent(vid), '_blank', 'noopener');
+    }
+    const undo = markHighlights(id); if (!undo) return;
     setTimeout(renderMatches, 300);
-    toast('Marked as watched', () => {
-      watched[id] = { ...(prev || { home: g.home.name, away: g.away.name, date: g.date.toISOString(), c: g.comp }), h: prev ? prev.h || 0 : 0, u: Date.now() };
-      LS.set('plh.watched', watched); queueSync(); renderMatches();
-    });
+    toast('Marked as watched', undo);
   }
   else if (act === 'lookAhead') lookAhead();
   else if (act === 'pickTeams') { hideModal(); setTab('me'); setTimeout(() => $('#favWrap').scrollIntoView({ behavior:'smooth', block:'center' }), 80); }
