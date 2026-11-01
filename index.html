@@ -343,6 +343,21 @@ details.lp[open] summary::after{content:" ▴"}
 .pfoot button,.pfoot a{padding:9px 14px;border-radius:99px;font:600 13px var(--fb);background:rgba(255,255,255,.08);color:#cfd8d3}
 .pfoot .pbtn{margin:0;background:rgba(26,147,232,.2);color:#7cc4ff}
 
+/* Full screen: picture fills the screen, controls float on top and fade away while playing.
+   Turns on by itself when the phone is sideways; the button rotates it for you when the phone is upright. */
+.player.imm{padding:0}
+.player.imm .pframe{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;margin:0}
+.player.imm .pbar{position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(rgba(0,0,0,.75),transparent);transition:opacity .25s;
+  padding:calc(env(safe-area-inset-top) + 10px) calc(env(safe-area-inset-right) + 16px) 28px calc(env(safe-area-inset-left) + 16px)}
+.player.imm .pctl{position:absolute;bottom:0;left:0;right:0;width:auto;z-index:2;background:linear-gradient(transparent,rgba(0,0,0,.8));transition:opacity .25s;
+  padding:32px calc(env(safe-area-inset-right) + 16px) calc(env(safe-area-inset-bottom) + 12px) calc(env(safe-area-inset-left) + 16px)}
+.player.imm .pfoot{display:none}
+.player.imm.idle .pbar,.player.imm.idle .pctl{opacity:0;pointer-events:none}
+.player.rot{inset:auto;top:0;left:100vw;width:100vh;width:100dvh;height:100vw;transform-origin:top left;transform:rotate(90deg)}
+.player.rot .pbar{padding:12px calc(env(safe-area-inset-bottom) + 16px) 28px calc(env(safe-area-inset-top) + 12px)}
+.player.rot .pctl{padding:32px calc(env(safe-area-inset-bottom) + 16px) 12px calc(env(safe-area-inset-top) + 12px)}
+.pctl #fsBtn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:block;margin:auto}
+
 /* Toast */
 .toast{position:fixed;z-index:29;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,20px);opacity:0;pointer-events:none;
   display:flex;align-items:center;gap:14px;padding:11px 12px 11px 18px;border-radius:99px;background:#14201b;color:#fff;font:600 14px var(--fb);
@@ -512,7 +527,7 @@ details.adv .inner{padding:0 16px 16px}
     <button class="circ" data-act="closePlayer" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pframe"><div id="ytp"></div><div class="pcover pass" id="pcover"></div></div>
   <div class="pctl" id="pctl" hidden><button data-act="pSeek" data-d="-10">−10</button><button class="pp" data-act="pToggle" id="ppBtn">❚❚</button><button data-act="pSeek" data-d="10">+10</button>
-    <input type="range" id="pSeek" min="0" max="1000" value="0" aria-label="Seek"><span class="tm" id="pTime"></span></div>
+    <input type="range" id="pSeek" min="0" max="1000" value="0" aria-label="Seek"><span class="tm" id="pTime"></span><button id="fsBtn" data-act="pFull" aria-label="Full screen"></button></div>
   <div class="pfoot" id="plFoot"></div>
 </div>
 <div class="modal" id="modal" hidden></div>
@@ -531,7 +546,7 @@ const ESPN_STAND = 'https://site.api.espn.com/apis/v2/sports/soccer/';
 const YT_API = 'https://www.googleapis.com/youtube/v3';
 const BUILT_IN_KEY = window.PLH_YOUTUBE_KEY || '';   // set in config.js (never replaced by updates)
 // App version — must match version.json in the repo. Bumped with every release.
-const APP_VERSION = '3.4';
+const APP_VERSION = '3.5';
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -1017,6 +1032,7 @@ async function openPlayer(id, vid){
   $('#plTitle').textContent = `${g.home.short} v ${g.away.short}`;
   $('#plSub').textContent = `${COMPS[g.comp].name} · ${COMPS[g.comp].source}`;
   $('#player').hidden = false; document.body.style.overflow = 'hidden';
+  plFull = false; layoutPlayer();
   $('#pctl').hidden = true;
   cover('pass', '<div class="big"></div><div class="msg">Loading…</div>');
   playerFoot();
@@ -1032,8 +1048,8 @@ async function openPlayer(id, vid){
       onError: () => cover('block', `<div class="msg">This video can only be played on YouTube.</div><div class="pr2"><button class="btn" data-act="ytOut" data-id="${esc(id)}">Open in YouTube</button></div>`),
       onStateChange: ev => {
         const S = window.YT.PlayerState;
-        if (ev.data === S.PLAYING) { if (!plState.ended || plState.keep) cover('clear'); $('#pctl').hidden = false; $('#ppBtn').textContent = '❚❚'; }
-        else if (ev.data === S.PAUSED) { $('#ppBtn').textContent = '▶'; if (!plState.ended || plState.keep) cover('block', '<button class="big" data-act="pToggle" aria-label="Play"></button><div class="msg">Paused</div>'); }
+        if (ev.data === S.PLAYING) { if (!plState.ended || plState.keep) cover('clear'); $('#pctl').hidden = false; $('#ppBtn').textContent = '❚❚'; wake(); }
+        else if (ev.data === S.PAUSED) { $('#ppBtn').textContent = '▶'; wake(); if (!plState.ended || plState.keep) cover('block', '<button class="big" data-act="pToggle" aria-label="Play"></button><div class="msg">Paused</div>'); }
         else if (ev.data === S.ENDED) { plState.ended = true; plState.keep = false; finish(); }
       }
     }
@@ -1059,7 +1075,42 @@ function playerTick(){
   }
   if (!plState.ended && d > 60 && t >= d - 12) { plState.ended = true; pl.pauseVideo(); finish(); }
 }
+const FS_IN = '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+const FS_OUT = '<svg viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+const landMQ = matchMedia('(orientation: landscape) and (max-height: 600px)'), portMQ = matchMedia('(orientation: portrait)');
+let plFull = false, idleT = null, wasIdle = false;
+const nativeFull = () => document.fullscreenElement || document.webkitFullscreenElement;
+function layoutPlayer(){
+  const P = $('#player'), imm = plFull || landMQ.matches;
+  P.classList.toggle('imm', imm);
+  P.classList.toggle('rot', plFull && portMQ.matches && !nativeFull());   // iPhone can't go truly full screen, so turn the player sideways
+  $('#fsBtn').innerHTML = plFull ? FS_OUT : FS_IN;
+  $('#fsBtn').hidden = landMQ.matches && !plFull;                          // already full screen when the phone is sideways
+  wake();
+}
+function wake(){
+  const P = $('#player');
+  P.classList.remove('idle'); clearTimeout(idleT);
+  if (P.classList.contains('imm') && pl && pl.getPlayerState && pl.getPlayerState() === window.YT.PlayerState.PLAYING)
+    idleT = setTimeout(() => P.classList.add('idle'), 3000);
+}
+function toggleFull(){
+  plFull = !plFull;
+  const P = $('#player');
+  try {
+    if (plFull && document.fullscreenEnabled && P.requestFullscreen) P.requestFullscreen().catch(() => {});   // iPad / computers
+    else if (!plFull && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  } catch (e) {}
+  layoutPlayer();
+}
+landMQ.addEventListener('change', () => { if (!$('#player').hidden) layoutPlayer(); });
+portMQ.addEventListener('change', () => { if (!$('#player').hidden) layoutPlayer(); });
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && plFull) plFull = false; if (!$('#player').hidden) layoutPlayer(); });
+$('#player').addEventListener('pointerdown', () => { wasIdle = $('#player').classList.contains('idle'); wake(); }, true);
 function closePlayer(){
+  plFull = false; clearTimeout(idleT);
+  try { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) {}
+  $('#player').classList.remove('imm', 'rot', 'idle');
   clearInterval(plTick); plTick = null;
   try { if (pl) pl.destroy(); } catch (e) {}
   pl = null; plState = null;
@@ -1654,6 +1705,8 @@ document.addEventListener('click', e => {
   else if (act === 'predSave' && predDraft) { setPrediction(predDraft.id, [predDraft.h, predDraft.a]); hideModal(); toast(`Locked in ${predDraft.h}–${predDraft.a} 🔮`); predDraft = null; }
   else if (act === 'predClear') { setPrediction(id, null); hideModal(); predDraft = null; }
   else if (act === 'closePlayer') closePlayer();
+  else if (act === 'pToggle' && pl && el.id === 'pcover' && wasIdle) {}
+  else if (act === 'pFull') toggleFull();
   else if (act === 'pToggle' && pl) { if (pl.getPlayerState() === window.YT.PlayerState.PLAYING) pl.pauseVideo(); else pl.playVideo(); }
   else if (act === 'pSeek' && pl) pl.seekTo(Math.max(0, pl.getCurrentTime() + Number(el.dataset.d)), true);
   else if (act === 'pKeep' && pl) { plState.keep = true; cover('clear'); pl.playVideo(); }
